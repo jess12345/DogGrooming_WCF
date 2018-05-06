@@ -29,10 +29,7 @@ namespace DogGrooming_WCF
                 if (Delete(id)) return "Success";
                 else return "Fail: Cannot delete groomer";
             }
-            else
-            {
-                return "Fail: Invalid idGroomer";
-            }
+            else { return "Fail: Invalid idGroomer"; }
         }
 
         public Dictionary<string, string> GetGroomerById(string idGroomer)
@@ -53,10 +50,7 @@ namespace DogGrooming_WCF
                 if (Update(id, firstname, surname, email, password)) return "Success";
                 else return "Fail: Cannot update groomer";
             }
-            else
-            {
-                return "Fail: Invalid idGroomer";
-            }
+            else { return "Fail: Invalid idGroomer"; }
         }
 
 
@@ -72,7 +66,7 @@ namespace DogGrooming_WCF
         //====================================================//
         //======================= LOGIC ======================//
         //====================================================//
-        
+
 
         private bool Authenticate(string email, string password)
         {
@@ -99,6 +93,7 @@ namespace DogGrooming_WCF
             var groomerDetails = new Dictionary<string, string>();
             groomerDetails.Add("idGroomer", "1");
             groomerDetails.Add("FirstName", "Tom");
+            groomerDetails.Add("Surname", "Groomer");
             groomerDetails.Add("Email", "tomgroomer@gmail.com");
 
             // Send dictionary back
@@ -114,6 +109,7 @@ namespace DogGrooming_WCF
             var groomerDetails = new Dictionary<string, string>();
             groomerDetails.Add("idGroomer", "1");
             groomerDetails.Add("FirstName", "Tom");
+            groomerDetails.Add("Surname", "Groomer");
             groomerDetails.Add("Email", "tomgroomer@gmail.com");
 
             allGroomers.Add(groomerDetails);

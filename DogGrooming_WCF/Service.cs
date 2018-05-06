@@ -12,7 +12,7 @@ namespace DogGrooming_WCF
     public interface IGroomer
     {
         [OperationContract]
-        [WebGet(UriTemplate="ViewAll")]
+        [WebGet(UriTemplate = "ViewAll")]
         List<Dictionary<string, string>> GetGroomerList();
 
         [OperationContract]
@@ -41,16 +41,20 @@ namespace DogGrooming_WCF
     public interface IAppointment
     {
         [OperationContract]
+        [WebGet(UriTemplate = "ViewAll")]
         List<Dictionary<string, string>> GetAppointmentList();
 
         [OperationContract]
+        [WebGet(UriTemplate = "View/{idGroomer}/{idDog}/{startTime}")]
         Dictionary<string, string> GetAppointmentById(string idGroomer, string idDog, string startTime);
 
         [OperationContract]
-        int CreateAppointment(Dictionary<string, string> appointmentDetails);
+        [WebGet(UriTemplate = "Add/{idGroomer}/{idDog}/{startTime}/{idGroomingType}/{duration}/{comments}")]
+        string CreateAppointment(string idGroomer, string idDog, string startTime, string idGroomingType, string duration, string comments);
 
         [OperationContract]
-        bool DeleteAppointment(string idGroomer, string idDog, string startTime);
+        [WebGet(UriTemplate = "Delete/{idGroomer}/{idDog}/{startTime}")]
+        string DeleteAppointment(string idGroomer, string idDog, string startTime);
     }
 
 
@@ -58,41 +62,52 @@ namespace DogGrooming_WCF
     public interface IDog
     {
         [OperationContract]
+        [WebGet(UriTemplate = "ViewAll")]
         List<Dictionary<string, string>> GetDogList();
 
         [OperationContract]
+        [WebGet(UriTemplate = "View/{idDog}")]
         Dictionary<string, string> GetDogById(string idDog);
 
         [OperationContract]
-        int CreateDog(Dictionary<string, string> dogDetails);
+        [WebGet(UriTemplate = "Add/{idClient}/{name}/{birthDate}/{idBreed}")]
+        string CreateDog(string idClient, string name, string birthDate, string idBreed);
 
         [OperationContract]
-        bool UpdateDog(Dictionary<string, string> dogDetailsAndId);
+        [WebGet(UriTemplate = "Update/{idDog}/{idClient}/{name}/{birthDate}/{idBreed}")]
+        string UpdateDog(string idDog, string idClient, string name, string birthDate, string idBreed);
 
         [OperationContract]
-        bool DeleteDog(string idDog);
+        [WebGet(UriTemplate = "Delete/{idDog}")]
+        string DeleteDog(string idDog);
     }
 
     [ServiceContract]
     public interface IClient
     {
         [OperationContract]
+        [WebGet(UriTemplate = "ViewAll")]
         List<Dictionary<string, string>> GetClientList();
 
         [OperationContract]
+        [WebGet(UriTemplate = "View/{idClient}")]
         Dictionary<string, string> GetClientById(string idClient);
 
         [OperationContract]
-        int CreateClient(Dictionary<string, string> clientDetails);
+        [WebGet(UriTemplate = "Add/{firstname}/{surname}/{email}/{password}/{homeAddress}/{mobilePh}/{workPhone}/{homePhone}")]
+        string CreateClient(string firstname, string surname, string email, string password, string homeAddress, string mobilePh, string workPhone, string homePhone);
 
         [OperationContract]
-        bool UpdateClient(Dictionary<string, string> clientDetailsAndId);
+        [WebGet(UriTemplate= "Update/{idClient}/{firstname}/{surname}/{email}/{password}/{homeAddress}/{mobilePh}/{workPhone}/{homePhone}")]
+        string UpdateClient(string idClient, string firstname, string surname, string email, string password, string homeAddress, string mobilePh, string workPhone, string homePhone);
 
         [OperationContract]
-        bool DeleteClient(string idClient);
+        [WebGet(UriTemplate = "Delete/{idClient}")]
+        string DeleteClient(string idClient);
 
         [OperationContract]
-        bool AuthenticateClient(Dictionary<string, string> clientEmailAndPassword);
+        [WebGet(UriTemplate = "Authenticate/{clientEmail}/{clientPassword}")]
+        string AuthenticateClient(string clientEmail, string clientPassword);
     }
 
 
@@ -100,16 +115,20 @@ namespace DogGrooming_WCF
     public interface IBreed
     {
         [OperationContract]
-        List<Dictionary<string, string>> GeBreedList();
+        [WebGet(UriTemplate = "ViewAll")]
+        List<Dictionary<string, string>> GetBreedList();
 
         [OperationContract]
+        [WebGet(UriTemplate = "View/{idBreed}")]
         Dictionary<string, string> GetBreedById(string idBreed);
 
         [OperationContract]
-        int CreateBreed(Dictionary<string, string> breedDetails);
+        [WebGet(UriTemplate= "Add/{name}")]
+        string CreateBreed( string name);
 
         [OperationContract]
-        bool DeleteBreed(string idDog);
+        [WebGet(UriTemplate = "Delete/{idBreed}")]
+        string DeleteBreed(string idBreed);
     }
 
 
@@ -117,16 +136,20 @@ namespace DogGrooming_WCF
     public interface IGroomingType
     {
         [OperationContract]
+        [WebGet(UriTemplate = "ViewAll")]
         List<Dictionary<string, string>> GeGroomingTypeList();
 
         [OperationContract]
+        [WebGet(UriTemplate = "View/{idGroomingType}")]
         Dictionary<string, string> GetGroomingById(string idGroomingType);
 
         [OperationContract]
-        int CreateGroomingType(Dictionary<string, string> groomingTypeDetails);
+        [WebGet(UriTemplate = "Add/{name}")]
+        string CreateGroomingType(string name);
 
         [OperationContract]
-        bool DeleteGroomingType(string idGroomingType);
+        [WebGet(UriTemplate = "Delete/{idGroomingType}")]
+        string DeleteGroomingType(string idGroomingType);
     }
 
 }

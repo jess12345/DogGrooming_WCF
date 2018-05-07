@@ -15,7 +15,8 @@ namespace DogGrooming_WCF
             {
                 if (int.TryParse(idDog, out int idD))
                 {
-                    if (DateTime.TryParse(startTime, out DateTime startT))
+                    var startT = ParseDateTime(startTime);
+                    if (startT != new DateTime(1900, 1, 1))
                     {
                         if (int.TryParse(idGroomingType, out int idGr))
                         {
@@ -41,9 +42,10 @@ namespace DogGrooming_WCF
             {
                 if (int.TryParse(idDog, out int idD))
                 {
-                    if (DateTime.TryParse(startTime, out DateTime startT))
+                    var startT = ParseDateTime(startTime);
+                    if (startT != new DateTime(1900, 1, 1))
                     {
-                        if(Delete(idG, idD, startT)) return "Success";
+                        if (Delete(idG, idD, startT)) return "Success";
                         else return "Fail: Cannot delete appointment";
                     }
                     else { return "Fail: Invalid startTime"; }
@@ -59,7 +61,8 @@ namespace DogGrooming_WCF
             {
                 if (int.TryParse(idDog, out int idD))
                 {
-                    if (DateTime.TryParse(startTime, out DateTime startT))
+                    var startT = ParseDateTime(startTime);
+                    if (startT != new DateTime(1900, 1, 1))
                     {
                         return GetById(idG, idD, startT);
                     }
@@ -79,13 +82,42 @@ namespace DogGrooming_WCF
         //======================= LOGIC ======================//
         //====================================================//
 
+        private DateTime ParseDateTime(string value) // Value is in the format of YYYY-MM-DD-HH-MM-SS
+        {
+            var split = value.Split('-');
+            bool success;
+            int counter = 0;
+            int year = 0;
+            int month = 0;
+            int day = 0;
+            int hr = 0;
+            int min = 0;
+            int sec = 0;
+            foreach (var s in split)
+            {
+                success = int.TryParse(s, out int n);
+                if (!success) break;
+                switch (counter)
+                {
+                    case 0: year = n; break;
+                    case 1: month = n; break;
+                    case 2: day = n; break;
+                    case 3: hr = n; break;
+                    case 4: min = n; break;
+                    case 5: sec = n; break;
+                }
+                counter++;
+            }
+            if (counter < 6) return new DateTime(1900, 1, 1);
+            return new DateTime(year, month, day, hr, min, sec);
+        }
 
         private bool Create(int idGroomer, int idDog, DateTime startTime, int idGroomingType, int duration, string comments)
         {
             // Insert into database
             return true;
         }
-        
+
         private bool Delete(int idGroomer, int idDog, DateTime startTime)
         {
             // Delete appointment from the database
@@ -100,9 +132,9 @@ namespace DogGrooming_WCF
             appointmentDetails.Add("idGroomer", "1");
             appointmentDetails.Add("idDog", "1");
             appointmentDetails.Add("StartTime", "2018-05-07 13:00:00");
-            appointmentDetails.Add("idGroomingType","2");
-            appointmentDetails.Add("Duration","90");
-            appointmentDetails.Add("Comments","");
+            appointmentDetails.Add("idGroomingType", "2");
+            appointmentDetails.Add("Duration", "90");
+            appointmentDetails.Add("Comments", "");
 
             // Send dictionary back
             return appointmentDetails;

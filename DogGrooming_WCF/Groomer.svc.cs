@@ -12,7 +12,8 @@ namespace DogGrooming_WCF
     {
         public string AuthenticateGroomer(string groomerEmail, string groomerPassword)
         {
-            return Authenticate(groomerEmail, groomerPassword) ? "Success" : "Fail";
+            var idGroomer = Authenticate(groomerEmail, groomerPassword);
+            return (idGroomer>0) ? "Success: "+idGroomer : "Fail";
         }
 
         public string CreateGroomer(string firstname, string surname, string email, string password)
@@ -68,9 +69,13 @@ namespace DogGrooming_WCF
         //====================================================//
 
 
-        private bool Authenticate(string email, string password)
+        private int Authenticate(string email, string password)
         {
-            return true;
+            var result = MySqlDatabase.RunQuery("SELECT idGroomer FROM Groomer WHERE `email`='"+email+"' AND `password`='"+password+"'");
+            if (result == null) return -1;
+            if (result.Rows.Count < 1 | result.Columns.Count < 1) return -1;
+            if (!int.TryParse(result.Rows[0][0].ToString(), out int id)) return -1;
+            return id;
         }
 
         private int Create(string firstname, string surname, string email, string password)

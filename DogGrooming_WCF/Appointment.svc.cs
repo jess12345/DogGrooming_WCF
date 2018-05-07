@@ -22,8 +22,9 @@ namespace DogGrooming_WCF
                         {
                             if (int.TryParse(duration, out int du))
                             {
-                                if (Create(idG, idD, startT, idGr, du, comments)) return "Success";
-                                else return "Fail: Appointment already exist";
+                                var error = Create(idG, idD, startT, idGr, du, comments);
+                                if (error=="") return "Success";
+                                else return "Fail: "+error;
                             }
                             else { return "Fail: Invalid duration"; }
                         }
@@ -112,10 +113,16 @@ namespace DogGrooming_WCF
             return new DateTime(year, month, day, hr, min, sec);
         }
 
-        private bool Create(int idGroomer, int idDog, DateTime startTime, int idGroomingType, int duration, string comments)
+        private string Create(int idGroomer, int idDog, DateTime startTime, int idGroomingType, int duration, string comments)
         {
             // Insert into database
-            return true;
+            try
+            {
+                var query = string.Concat("INSERT INTO Appointment VALUES(", idGroomer, ",", idDog, ",'", startTime.ToString("yyyy-MM-dd HH:mm:ss"), "',", idGroomingType, ",", 90, ",'", comments, "')");
+                MySqlDatabase.RunQuery(query);
+                return "";
+            }
+            catch (Exception e) { return e.ToString(); }
         }
 
         private bool Delete(int idGroomer, int idDog, DateTime startTime)

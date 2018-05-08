@@ -13,7 +13,7 @@ namespace DogGrooming_WCF
         {
             int idBreed = Create(name);
             if (idBreed > 0) return "Success: " + idBreed;
-            else return "Fail: Breed already exist";
+            else throw new FaultException<string>("Breed already exist", "Breed already exist");
         }
 
         public string DeleteBreed(string idBreed)
@@ -21,9 +21,9 @@ namespace DogGrooming_WCF
             if (int.TryParse(idBreed, out int id))
             {
                 if (Delete(id)) return "Success";
-                else return "Fail: Cannot delete breed";
+                else throw new FaultException<string>("Cannot delete breed", "Cannot delete breed");
             }
-            else { return "Fail: Invalid idBreed"; }
+            else { throw new FaultException<string>("Invalid idBreed", "Invalid idBreed"); }
         }
 
         public List<Dictionary<string, string>> GetBreedList()
@@ -34,7 +34,7 @@ namespace DogGrooming_WCF
         public Dictionary<string, string> GetBreedById(string idBreed)
         {
             if (int.TryParse(idBreed, out int id)) return GetById(id);
-            else return null;
+            else throw new FaultException<string>("Cannot find breed", "Cannot find breed");
         }
 
 

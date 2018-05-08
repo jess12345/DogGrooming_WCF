@@ -23,8 +23,8 @@ namespace DogGrooming_WCF
                             if (int.TryParse(duration, out int du))
                             {
                                 var error = Create(idG, idD, startT, idGr, du, comments);
-                                if (error=="") return "Success";
-                                else return "Fail: "+error;
+                                if (error == "") return "Success";
+                                else return "Fail: " + error;
                             }
                             else { return "Fail: Invalid duration"; }
                         }
@@ -46,8 +46,8 @@ namespace DogGrooming_WCF
                     var startT = ParseDateTime(startTime);
                     if (startT != new DateTime(1900, 1, 1))
                     {
-                        if (Delete(idG, idD, startT)) return "Success";
-                        else return "Fail: Cannot delete appointment";
+                        Delete(idG, idD, startT);
+                        return "Success";
                     }
                     else { return "Fail: Invalid startTime"; }
                 }
@@ -125,10 +125,11 @@ namespace DogGrooming_WCF
             catch (Exception e) { return e.ToString(); }
         }
 
-        private bool Delete(int idGroomer, int idDog, DateTime startTime)
+        private void Delete(int idGroomer, int idDog, DateTime startTime)
         {
             // Delete appointment from the database
-            return true;
+            var query = string.Concat("DELETE FROM Appointment WHERE idGroomer = ", idGroomer, " AND idDog = ", idDog, " AND StartTime = '", startTime.ToString("yyyy-MM-dd HH:mm:ss"), "'");
+            MySqlDatabase.RunQuery(query);
         }
 
         private Dictionary<string, string> GetById(int idGroomer, int idDog, DateTime startTime)

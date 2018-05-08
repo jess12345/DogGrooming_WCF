@@ -161,30 +161,34 @@ namespace DogGrooming_WCF
 
         private List<Dictionary<string, string>> GetAll()
         {
-            // Retrieve all appointments
-            var allAppointment = new List<Dictionary<string, string>>();
-            // Put information in a list of dictionary
+            try
+            {
+                // Retrieve all appointments
+                var query = string.Concat("SELECT * FROM Appointment");
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 6)) return null;
 
-            var appointmentDetails = new Dictionary<string, string>();
-            appointmentDetails.Add("idGroomer", "1");
-            appointmentDetails.Add("idDog", "1");
-            appointmentDetails.Add("StartTime", "2018-05-07 13:00:00");
-            appointmentDetails.Add("idGroomingType", "2");
-            appointmentDetails.Add("Duration", "90");
-            appointmentDetails.Add("Comments", "");
-            allAppointment.Add(appointmentDetails);
+                // Put information into a dictionary list
+                var allAppointment = new List<Dictionary<string, string>>();
+                Dictionary<string, string> appointmentDetails;
+                for (int i=0; i<result.Rows.Count;i++)
+                {
+                    appointmentDetails = new Dictionary<string, string>
+                    {
+                        { "idGroomer", result.Rows[i]["idGroomer"].ToString() },
+                        { "idDog", result.Rows[i]["idDog"].ToString() },
+                        { "StartTime", result.Rows[i]["StartTime"].ToString() },
+                        { "idGroomingType", result.Rows[i]["idGroomingType"].ToString() },
+                        { "Duration", result.Rows[i]["Duration"].ToString() },
+                        { "Comments", result.Rows[i]["Comments"].ToString() }
+                    };
+                    allAppointment.Add(appointmentDetails);
+                }
 
-            appointmentDetails = new Dictionary<string, string>();
-            appointmentDetails.Add("idGroomer", "1");
-            appointmentDetails.Add("idDog", "1");
-            appointmentDetails.Add("StartTime", "2018-05-10 10:00:00");
-            appointmentDetails.Add("idGroomingType", "3");
-            appointmentDetails.Add("Duration", "90");
-            appointmentDetails.Add("Comments", "With paw massage");
-            allAppointment.Add(appointmentDetails);
-
-            // Send list of dictionary back
-            return allAppointment;
+                // Send list of dictionary back
+                return allAppointment;
+            }
+            catch (Exception e) { return null; }
         }
 
     }

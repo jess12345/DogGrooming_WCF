@@ -22,19 +22,18 @@ namespace DogGrooming_WCF
                         {
                             if (int.TryParse(duration, out int du))
                             {
-                                var error = Create(idG, idD, startT, idGr, du, comments);
-                                if (error == "") return "Success";
-                                else return "Fail: " + error;
+                                Create(idG, idD, startT, idGr, du, comments);
+                                return "Success";
                             }
-                            else { return "Fail: Invalid duration"; }
+                            else { throw new FaultException<string>("Invalid duration","Invalid duration"); }
                         }
-                        else { return "Fail: Invalid idGroomingType"; }
+                        else { throw new FaultException<string>("Invalid idGroomingType", "Invalid idGroomingType"); }
                     }
-                    else { return "Fail: Invalid startTime"; }
+                    else { throw new FaultException<string>("Invalid startTime", "Invalid startTime"); }
                 }
-                else { return "Fail: Invalid idDog"; }
+                else { throw new FaultException<string>("Fail: Invalid idDog", "Fail: Invalid idDog"); }
             }
-            else { return "Fail: Invalid idGroomer"; }
+            else { throw new FaultException<string>("Invalid idGroomer", "Invalid idGroomer"); }
         }
 
         public string DeleteAppointment(string idGroomer, string idDog, string startTime)
@@ -49,11 +48,11 @@ namespace DogGrooming_WCF
                         Delete(idG, idD, startT);
                         return "Success";
                     }
-                    else { return "Fail: Invalid startTime"; }
+                    else { throw new FaultException<string>("Invalid startTime", "Invalid startTime"); }
                 }
-                else { return "Fail: Invalid idDog"; }
+                else { throw new FaultException<string>("Invalid idDog", "Invalid idDog"); }
             }
-            else { return "Fail: Invalid idGroomer"; }
+            else { throw new FaultException<string>("Invalid idGroomer", "Invalid idGroomer"); }
         }
 
         public Dictionary<string, string> GetAppointmentById(string idGroomer, string idDog, string startTime)
@@ -67,9 +66,11 @@ namespace DogGrooming_WCF
                     {
                         return GetById(idG, idD, startT);
                     }
+                    else { throw new FaultException<string>("Cannot find appointment", "Cannot find appointment"); }
                 }
+                else { throw new FaultException<string>("Invalid idDog","Invalid idDog"); }
             }
-            return null;
+            else { throw new FaultException<string>("Invalid idGroomer", "Invalid idGroomer"); }
         }
 
         public List<Dictionary<string, string>> GetAppointmentList()
@@ -113,16 +114,15 @@ namespace DogGrooming_WCF
             return new DateTime(year, month, day, hr, min, sec);
         }
 
-        private string Create(int idGroomer, int idDog, DateTime startTime, int idGroomingType, int duration, string comments)
+        private void Create(int idGroomer, int idDog, DateTime startTime, int idGroomingType, int duration, string comments)
         {
             // Insert into database
             try
             {
                 var query = string.Concat("INSERT INTO Appointment VALUES(", idGroomer, ",", idDog, ",'", startTime.ToString("yyyy-MM-dd HH:mm:ss"), "',", idGroomingType, ",", 90, ",'", comments, "')");
                 MySqlDatabase.RunQuery(query);
-                return "";
             }
-            catch (Exception e) { return e.ToString(); }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
         private void Delete(int idGroomer, int idDog, DateTime startTime)
@@ -155,7 +155,7 @@ namespace DogGrooming_WCF
                 // Send dictionary back
                 return appointmentDetails;
             }
-            catch (Exception e) { return null; }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
 
@@ -188,7 +188,7 @@ namespace DogGrooming_WCF
                 // Send list of dictionary back
                 return allAppointment;
             }
-            catch (Exception e) { return null; }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
     }

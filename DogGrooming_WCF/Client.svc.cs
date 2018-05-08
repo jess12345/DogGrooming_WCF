@@ -25,13 +25,13 @@ namespace DogGrooming_WCF
                     {
                         int idClient = Create(firstname, surname, email, password, homeAddress, mPh, wPh, hPh);
                         if (idClient > 0) return "Success: " + idClient;
-                        else return "Fail: User already exist";
+                        else throw new FaultException<string>("User already exist", "User already exist");
                     }
-                    else { return "Fail: Invalid homePhone"; }
+                    else { throw new FaultException<string>("Invalid homePhone", "Invalid homePhone"); }
                 }
-                else { return "Fail: Invalid workPhone"; }
+                else { throw new FaultException<string>("Invalid workPhone", "Invalid workPhone"); }
             }
-            else { return "Fail: Invalid mobilePh"; }
+            else { throw new FaultException<string>("Invalid mobilePh", "Invalid mobilePh"); }
         }
 
         public string DeleteClient(string idClient)
@@ -39,15 +39,15 @@ namespace DogGrooming_WCF
             if (int.TryParse(idClient, out int id))
             {
                 if (Delete(id)) return "Success";
-                else return "Fail: Cannot delete client";
+                else throw new FaultException<string>("Cannot delete client", "Cannot delete client");
             }
-            else { return "Fail: Invalid idClient"; }
+            else { throw new FaultException<string>("Invalid idClient", "Invalid idClient"); }
         }
 
         public Dictionary<string, string> GetClientById(string idClient)
         {
             if (int.TryParse(idClient, out int id)) return GetById(id);
-            else return null;
+            else throw new FaultException<string>("Cannot find client", "Cannot find client");
         }
 
         public List<Dictionary<string, string>> GetClientList()
@@ -69,15 +69,15 @@ namespace DogGrooming_WCF
                                 email, password, homeAddress,
                                 mPh, wPh, hPh)) 
                             return "Success";
-                            else return "Fail: Cannot update client";
+                            else throw new FaultException<string>("Cannot update client", "Cannot update client");
                         }
-                        else { return "Fail: Invalid homePhone"; }
+                        else { throw new FaultException<string>("Invalid homePhone", "Invalid homePhone"); }
                     }
-                    else { return "Fail: Invalid workPhone"; }
+                    else { throw new FaultException<string>("Invalid workPhone", "Invalid workPhone"); }
                 }
-                else { return "Fail: Invalid mobilePh"; }
+                else { throw new FaultException<string>("Invalid mobilePh", "Invalid mobilePh"); }
             }
-            else { return "Fail: Invalid idClient"; }
+            else { throw new FaultException<string>("Invalid idClient", "Invalid idClient"); }
         }
 
 

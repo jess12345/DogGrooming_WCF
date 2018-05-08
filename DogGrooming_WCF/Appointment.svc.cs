@@ -134,18 +134,28 @@ namespace DogGrooming_WCF
 
         private Dictionary<string, string> GetById(int idGroomer, int idDog, DateTime startTime)
         {
-            // Retreve idGroomer, idDog, startTime
-            // Put information into a dictionary
-            var appointmentDetails = new Dictionary<string, string>();
-            appointmentDetails.Add("idGroomer", "1");
-            appointmentDetails.Add("idDog", "1");
-            appointmentDetails.Add("StartTime", "2018-05-07 13:00:00");
-            appointmentDetails.Add("idGroomingType", "2");
-            appointmentDetails.Add("Duration", "90");
-            appointmentDetails.Add("Comments", "");
+            try
+            {
+                // Retreve idGroomer, idDog, startTime
+                var query = string.Concat("SELECT * FROM Appointment WHERE idGroomer = ", idGroomer, " AND idDog = ", idDog, " AND StartTime = '", startTime.ToString("yyyy-MM-dd HH:mm:ss"), "'");
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 6)) return null;
 
-            // Send dictionary back
-            return appointmentDetails;
+                // Put information into a dictionary
+                var appointmentDetails = new Dictionary<string, string>
+                {
+                    { "idGroomer", result.Rows[0]["idGroomer"].ToString() },
+                    { "idDog", result.Rows[0]["idDog"].ToString() },
+                    { "StartTime", result.Rows[0]["StartTime"].ToString() },
+                    { "idGroomingType", result.Rows[0]["idGroomingType"].ToString() },
+                    { "Duration", result.Rows[0]["Duration"].ToString() },
+                    { "Comments", result.Rows[0]["Comments"].ToString() }
+                };
+
+                // Send dictionary back
+                return appointmentDetails;
+            }
+            catch (Exception e) { return null; }
         }
 
 

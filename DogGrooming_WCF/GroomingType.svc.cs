@@ -15,7 +15,7 @@ namespace DogGrooming_WCF
         {
             int idGroomingType = Create(name);
             if (idGroomingType > 0) return "Success: " + idGroomingType;
-            else return "Fail: Grooming type already exist";
+            else throw new FaultException<string>("Grooming type already exist", "Grooming type already exist");
         }
 
         public string DeleteGroomingType(string idGroomingType)
@@ -23,9 +23,9 @@ namespace DogGrooming_WCF
             if (int.TryParse(idGroomingType, out int id))
             {
                 if (Delete(id)) return "Success";
-                else return "Fail: Cannot delete grooming type";
+                else throw new FaultException<string>("Cannot delete grooming type", "Cannot delete grooming type");
             }
-            else { return "Fail: Invalid idGroomingType"; }
+            else { throw new FaultException<string>("Invalid idGroomingType", "Invalid idGroomingType"); }
         }
 
         public List<Dictionary<string, string>> GeGroomingTypeList()

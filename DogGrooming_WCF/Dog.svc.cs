@@ -19,13 +19,13 @@ namespace DogGrooming_WCF
                     {
                         int idDog = Create(idC, name, birth, idB);
                         if (idDog > 0) return "Success: " + idDog;
-                        else return "Fail: Dog already exist";
+                        else throw new FaultException<string>("Dog already exist", "Dog already exist");
                     }
-                    else { return "Fail: Invalid idBreed"; }
+                    else { throw new FaultException<string>("Invalid idBreed", "Invalid idBreed"); }
                 }
-                else { return "Fail: Invalid birthDate"; }
+                else { throw new FaultException<string>("Invalid birthDate", "Invalid birthDate"); }
             }
-            else { return "Fail: Invalid idClient"; }
+            else { throw new FaultException<string>("Invalid idClient", "Invalid idClient"); }
         }
 
         public string DeleteDog(string idDog)
@@ -33,9 +33,9 @@ namespace DogGrooming_WCF
             if (int.TryParse(idDog, out int id))
             {
                 if (Delete(id)) return "Success";
-                else return "Fail: Cannot delete dog";
+                else throw new FaultException<string>("Cannot delete dog", "Cannot delete dog");
             }
-            else { return "Fail: Invalid idDog"; }
+            else { throw new FaultException<string>("Invalid idDog", "Invalid idDog"); }
         }
 
         public Dictionary<string, string> GetDogById(string idDog)
@@ -61,15 +61,15 @@ namespace DogGrooming_WCF
                         {
                             if (Update(idD, idC, name, birth, idB))
                                 return "Success";
-                            else return "Fail: Cannot update dog";
+                            else throw new FaultException<string>("Cannot update dog", "Cannot update dog");
                         }
-                        else { return "Fail: Invalid idBreed"; }
+                        else { throw new FaultException<string>("Invalid idBreed", "Invalid idBreed"); }
                     }
-                    else { return "Fail: Invalid birthDate"; }
+                    else { throw new FaultException<string>("Invalid birthDate", "Invalid birthDate"); }
                 }
-                else { return "Fail: Invalid idClient"; }
+                else { throw new FaultException<string>("Invalid idClient", "Invalid idClient"); }
             }
-            else { return "Fail: Invalid idDog"; }
+            else { throw new FaultException<string>("Invalid idDog", "Invalid idDog"); }
         }
 
 

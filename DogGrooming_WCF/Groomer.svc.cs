@@ -20,7 +20,7 @@ namespace DogGrooming_WCF
         {
             int idGroomer = Create(firstname, surname, email, password);
             if (idGroomer > 0) return "Success: " + idGroomer;
-            else return "Fail: User already exist";
+            else throw new FaultException<string>("User already exist", "User already exist");
         }
 
         public string DeleteGroomer(string idGroomer)
@@ -28,9 +28,9 @@ namespace DogGrooming_WCF
             if (int.TryParse(idGroomer, out int id))
             {
                 if (Delete(id)) return "Success";
-                else return "Fail: Cannot delete groomer";
+                else throw new FaultException<string>("Cannot delete groomer", "Cannot delete groomer");
             }
-            else { return "Fail: Invalid idGroomer"; }
+            else { throw new FaultException<string>("Invalid idGroomer", "Invalid idGroomer"); }
         }
 
         public Dictionary<string, string> GetGroomerById(string idGroomer)
@@ -49,9 +49,9 @@ namespace DogGrooming_WCF
             if (int.TryParse(idGroomer, out int id))
             {
                 if (Update(id, firstname, surname, email, password)) return "Success";
-                else return "Fail: Cannot update groomer";
+                else throw new FaultException<string>("Cannot update groomer", "Cannot update groomer");
             }
-            else { return "Fail: Invalid idGroomer"; }
+            else { throw new FaultException<string>("Invalid idGroomer", "Invalid idGroomer"); }
         }
 
 

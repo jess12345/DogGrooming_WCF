@@ -41,8 +41,15 @@ namespace DogGrooming_WCF
         public Dictionary<string, string> GetDogById(string idDog)
         {
             if (int.TryParse(idDog, out int id)) return GetById(id);
-            else return null;
+            else throw new FaultException<string>("Invalid idDog", "Invalid idDog");
         }
+
+        public List<Dictionary<string, string>> GetDogByOwner(string idClient)
+        {
+            if (int.TryParse(idClient, out int id)) return GetByOwner(id);
+            else throw new FaultException<string>("Invalid idClient", "Invalid idClient");
+        }
+
 
         public List<Dictionary<string, string>> GetDogList()
         {
@@ -125,6 +132,34 @@ namespace DogGrooming_WCF
 
             // Send dictionary back
             return dogDetails;
+        }
+
+
+        private List<Dictionary<string,string>> GetByOwner(int idClient)
+        {
+            try
+            {
+                var query = string.Concat("SELECT d.idDog, d.`Name` DogName, d.BirthDate, b.`Name` Breed FROM Dog d INNER JOIN Breed b ON d.idBreed = b.idBreed WHERE idClient = ", idClient);
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 4)) return null;
+                
+                var allDogs = new List<Dictionary<string, string>>();
+                Dictionary<string, string> dogDetails;
+                for (int i = 0; i < result.Rows.Count; i++)
+                {
+                    dogDetails = new Dictionary<string, string>
+                    {
+                        { "idDog", result.Rows[i]["idDog"].ToString() },
+                        { "DogName", result.Rows[i]["DogName"].ToString() },
+                        { "BirthDate", result.Rows[i]["BirthDate"].ToString() },
+                        { "Breed", result.Rows[i]["Breed"].ToString() }
+                    };
+                    allDogs.Add(dogDetails);
+                }
+                
+                return allDogs;
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
 

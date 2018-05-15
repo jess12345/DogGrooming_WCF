@@ -69,9 +69,9 @@ namespace DogGrooming_WCF
         [WebGet(UriTemplate = "View/{idDog}")]
         Dictionary<string, string> GetDogById(string idDog);
 
-        //[OperationContract]
-        //[WebGet(UriTemplate = "ViewAllClient/{idClient}")]
-        //Dictionary<string, string> GetDogByOwner(string idClient);
+        [OperationContract]
+        [WebGet(UriTemplate = "ViewAllClient/{idClient}")]
+        List<Dictionary<string, string>> GetDogByOwner(string idClient);
 
         [OperationContract]
         [WebGet(UriTemplate = "Add/{idClient}/{name}/{birthDate}/{idBreed}")]

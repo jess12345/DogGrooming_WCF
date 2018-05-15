@@ -111,7 +111,7 @@ namespace DogGrooming_WCF
 
         [OperationContract]
         [WebGet(UriTemplate = "Authenticate/{clientEmail}/{clientPassword}")]
-        string AuthenticateClient(string clientEmail, string clientPassword);
+        Dictionary<string, string> AuthenticateClient(string clientEmail, string clientPassword);
     }
 
 

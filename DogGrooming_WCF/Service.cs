@@ -71,27 +71,27 @@ namespace DogGrooming_WCF
     {
         [OperationContract]
         [WebGet(UriTemplate = "ViewAll", ResponseFormat = WebMessageFormat.Json)]
-        List<Dictionary<string, string>> GetDogList();
+        List<DDog> GetDogList();
 
         [OperationContract]
-        [WebGet(UriTemplate = "View/{idDog}")]
-        Dictionary<string, string> GetDogById(string idDog);
+        [WebGet(UriTemplate = "View/{idDog}", ResponseFormat = WebMessageFormat.Json)]
+        DDog GetDogById(string idDog);
 
         [OperationContract]
-        [WebGet(UriTemplate = "ViewAllClient/{idClient}")]
-        List<Dictionary<string, string>> GetDogByOwner(string idClient);
+        [WebGet(UriTemplate = "ViewAllClient/{idClient}", ResponseFormat = WebMessageFormat.Json)]
+        List<DDog> GetDogByOwner(string idClient);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Add/{idClient}/{name}/{birthDate}/{idBreed}")]
-        string CreateDog(string idClient, string name, string birthDate, string idBreed);
+        [WebGet(UriTemplate = "Add/{idClient}/{name}/{birthDate}/{idBreed}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess CreateDog(string idClient, string name, string birthDate, string idBreed);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Update/{idDog}/{idClient}/{name}/{birthDate}/{idBreed}")]
-        string UpdateDog(string idDog, string idClient, string name, string birthDate, string idBreed);
+        [WebGet(UriTemplate = "Update/{idDog}/{idClient}/{name}/{birthDate}/{idBreed}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess UpdateDog(string idDog, string idClient, string name, string birthDate, string idBreed);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Delete/{idDog}")]
-        string DeleteDog(string idDog);
+        [WebGet(UriTemplate = "Delete/{idDog}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess DeleteDog(string idDog);
     }
 
     [ServiceContract]
@@ -241,6 +241,42 @@ namespace DogGrooming_WCF
         public DSuccess(int id)
         {
             Id = id;
+        }
+    }
+
+    [DataContract]
+    public class DDog
+    {
+        [DataMember]
+        public int IdDog { get; set; }
+
+        [DataMember]
+        public int IdClient { get; set; }
+
+        [DataMember]
+        public string ClientName { get; set; }
+
+        [DataMember]
+        public string DogName { get; set; }
+
+        [DataMember]
+        public string BirthDate { get; set; }
+
+        [DataMember]
+        public int IdBreed { get; set; }
+
+        [DataMember]
+        public string BreedName { get; set; }
+        
+        public DDog(int idDog, int idClient, string clientName, string dogName, string birthDate, int idBreed, string breedName)
+        {
+            IdDog = idDog;
+            IdClient = idClient;
+            ClientName = clientName;
+            DogName = dogName;
+            BirthDate = birthDate;
+            IdBreed = idBreed;
+            BreedName = breedName;
         }
     }
 

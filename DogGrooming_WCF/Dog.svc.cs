@@ -9,7 +9,7 @@ namespace DogGrooming_WCF
 {
     public class Dog : IDog
     {
-        public string CreateDog(string idClient, string name, string birthDate, string idBreed)
+        public DSuccess CreateDog(string idClient, string name, string birthDate, string idBreed)
         {
             if (int.TryParse(idClient, out int idC))
             {
@@ -18,7 +18,7 @@ namespace DogGrooming_WCF
                     if (int.TryParse(idBreed, out int idB))
                     {
                         int idDog = Create(idC, name, birth, idB);
-                        if (idDog > 0) return "Success: " + idDog;
+                        if (idDog > 0) return new DSuccess(idDog);
                         else throw new FaultException<string>("Dog already exist", "Dog already exist");
                     }
                     else { throw new FaultException<string>("Invalid idBreed", "Invalid idBreed"); }
@@ -28,35 +28,35 @@ namespace DogGrooming_WCF
             else { throw new FaultException<string>("Invalid idClient", "Invalid idClient"); }
         }
 
-        public string DeleteDog(string idDog)
+        public DSuccess DeleteDog(string idDog)
         {
             if (int.TryParse(idDog, out int id))
             {
-                if (Delete(id)) return "Success";
+                if (Delete(id)) return new DSuccess(id);
                 else throw new FaultException<string>("Cannot delete dog", "Cannot delete dog");
             }
             else { throw new FaultException<string>("Invalid idDog", "Invalid idDog"); }
         }
 
-        public Dictionary<string, string> GetDogById(string idDog)
+        public DDog GetDogById(string idDog)
         {
             if (int.TryParse(idDog, out int id)) return GetById(id);
             else throw new FaultException<string>("Invalid idDog", "Invalid idDog");
         }
 
-        public List<Dictionary<string, string>> GetDogByOwner(string idClient)
+        public List<DDog> GetDogByOwner(string idClient)
         {
             if (int.TryParse(idClient, out int id)) return GetByOwner(id);
             else throw new FaultException<string>("Invalid idClient", "Invalid idClient");
         }
 
 
-        public List<Dictionary<string, string>> GetDogList()
+        public List<DDog> GetDogList()
         {
             return GetAll();
         }
 
-        public string UpdateDog(string idDog, string idClient, string name, string birthDate, string idBreed)
+        public DSuccess UpdateDog(string idDog, string idClient, string name, string birthDate, string idBreed)
         {
             if (int.TryParse(idDog, out int idD))
             {
@@ -67,7 +67,7 @@ namespace DogGrooming_WCF
                         if (int.TryParse(idBreed, out int idB))
                         {
                             if (Update(idD, idC, name, birth, idB))
-                                return "Success";
+                                return new DSuccess(idD);
                             else throw new FaultException<string>("Cannot update dog", "Cannot update dog");
                         }
                         else { throw new FaultException<string>("Invalid idBreed", "Invalid idBreed"); }
@@ -111,64 +111,60 @@ namespace DogGrooming_WCF
             return true;
         }
 
-        private List<Dictionary<string, string>> GetAll()
-        {
-            // Retrieve all breeds
-            var allDog = new List<Dictionary<string, string>>();
-            // Put information in a list of dictionary
-
-            var dogDetails = new Dictionary<string, string>();
-            dogDetails.Add("idDog", "1");
-            dogDetails.Add("idClient", "1");
-            dogDetails.Add("Name", "Happy");
-            dogDetails.Add("BirthDate", "2016-08-19");
-            dogDetails.Add("idBreed", "1");
-            allDog.Add(dogDetails);
-
-
-            // Send list of dictionary back
-            return allDog;
-        }
-
-
-        private Dictionary<string, string> GetById(int idDog)
-        {
-            // Retreve idDog
-            // Put information into a dictionary
-            var dogDetails = new Dictionary<string, string>();
-            dogDetails.Add("idDog", "1");
-            dogDetails.Add("idClient", "1");
-            dogDetails.Add("Name", "Happy");
-            dogDetails.Add("BirthDate", "2016-08-19");
-            dogDetails.Add("idBreed", "1");
-
-            // Send dictionary back
-            return dogDetails;
-        }
-
-
-        private List<Dictionary<string,string>> GetByOwner(int idClient)
+        private List<DDog> GetAll()
         {
             try
             {
-                var query = string.Concat("SELECT d.idDog, d.`Name` DogName, d.BirthDate, b.`Name` Breed FROM Dog d INNER JOIN Breed b ON d.idBreed = b.idBreed WHERE idClient = ", idClient);
+                var query = "SELECT d.idDog, d.idClient, c.FirstName+' '+c.Surname ClientName, d.`Name` DogName, d.BirthDate, d.idBreed, b.`Name` BreedName FROM Dog d INNER JOIN Breed b ON b.idBreed = d.idBreed INNER JOIN `Client` c ON c.idClient = d.idClient";
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 4)) return null;
+
+                var allDogs = new List<DDog>();
+                for (int i = 0; i < result.Rows.Count; i++)
+                {
+                    allDogs.Add(new DDog(
+                        int.Parse(result.Rows[i]["idDog"].ToString()),
+                        int.Parse(result.Rows[i]["idClient"].ToString()),
+                        result.Rows[i]["ClientName"].ToString(),
+                        result.Rows[i]["DogName"].ToString(),
+                        result.Rows[i]["BirthDate"].ToString(),            
+                        int.Parse(result.Rows[i]["idBreed"].ToString()),
+                        result.Rows[i]["BreedName"].ToString()
+                        ));
+                }
+                return allDogs;
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
+        }
+
+
+        private DDog GetById(int idDog)
+        {
+            return new DDog(1, 1, "Tom Groomer", "Happy", "2016-08-24", 1, "Dog"); // Dummy Data
+        }
+
+
+        private List<DDog> GetByOwner(int idClient)
+        {
+            try
+            {
+                var query = string.Concat("SELECT d.idDog, d.idClient, c.FirstName+' '+c.Surname ClientName, d.`Name` DogName, d.BirthDate, d.idBreed, b.`Name` BreedName FROM Dog d INNER JOIN Breed b ON b.idBreed = d.idBreed INNER JOIN `Client` c ON c.idClient = d.idClient WHERE d.idClient = ", idClient);
                 var result = MySqlDatabase.RunQuery(query);
                 if ((result.Rows.Count < 1) & (result.Columns.Count != 4)) return null;
                 
-                var allDogs = new List<Dictionary<string, string>>();
-                Dictionary<string, string> dogDetails;
+                var allDogs = new List<DDog>();
                 for (int i = 0; i < result.Rows.Count; i++)
                 {
-                    dogDetails = new Dictionary<string, string>
-                    {
-                        { "idDog", result.Rows[i]["idDog"].ToString() },
-                        { "DogName", result.Rows[i]["DogName"].ToString() },
-                        { "BirthDate", result.Rows[i]["BirthDate"].ToString() },
-                        { "Breed", result.Rows[i]["Breed"].ToString() }
-                    };
-                    allDogs.Add(dogDetails);
+                    allDogs.Add(new DDog(
+                       int.Parse(result.Rows[i]["idDog"].ToString()),
+                       int.Parse(result.Rows[i]["idClient"].ToString()),
+                       result.Rows[i]["ClientName"].ToString(),
+                       result.Rows[i]["DogName"].ToString(),
+                       result.Rows[i]["BirthDate"].ToString(),
+                       int.Parse(result.Rows[i]["idBreed"].ToString()),
+                       result.Rows[i]["BreedName"].ToString()
+                       ));
                 }
-                
                 return allDogs;
             }
             catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }

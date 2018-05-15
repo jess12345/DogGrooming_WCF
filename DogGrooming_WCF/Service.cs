@@ -41,28 +41,28 @@ namespace DogGrooming_WCF
     public interface IAppointment
     {
         [OperationContract]
-        [WebGet(UriTemplate = "ViewAll")]
-        List<Dictionary<string, string>> GetAppointmentList();
+        [WebGet(UriTemplate = "ViewAll", ResponseFormat = WebMessageFormat.Json)]
+        List<DAppointment> GetAppointmentList();
 
         [OperationContract]
-        [WebGet(UriTemplate = "ViewAllClient/{idClient}")]
-        List<Dictionary<string, string>> GetAppointmentsByClient(string idClient);
+        [WebGet(UriTemplate = "ViewAllClient/{idClient}", ResponseFormat = WebMessageFormat.Json)]
+        List<DAppointment> GetAppointmentsByClient(string idClient);
 
         [OperationContract]
-        [WebGet(UriTemplate = "ViewAllGroomer/idGroomer")]
-        List<Dictionary<string, string>> GetAppointmentByGroomer(string idGroomer);
+        [WebGet(UriTemplate = "ViewAllGroomer/{idGroomer}", ResponseFormat = WebMessageFormat.Json)]
+        List<DAppointment> GetAppointmentByGroomer(string idGroomer);
 
         [OperationContract]
-        [WebGet(UriTemplate = "View/{idGroomer}/{idDog}/{startTime}")]
-        Dictionary<string, string> GetAppointmentById(string idGroomer, string idDog, string startTime);
+        [WebGet(UriTemplate = "View/{idGroomer}/{idDog}/{startTime}", ResponseFormat = WebMessageFormat.Json)]
+        DAppointment GetAppointmentById(string idGroomer, string idDog, string startTime);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Add/{idGroomer}/{idDog}/{startTime}/{idGroomingType}/{duration}/{comments}")]
-        string CreateAppointment(string idGroomer, string idDog, string startTime, string idGroomingType, string duration, string comments);
+        [WebGet(UriTemplate = "Add/{idGroomer}/{idDog}/{startTime}/{idGroomingType}/{duration}/{comments}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess CreateAppointment(string idGroomer, string idDog, string startTime, string idGroomingType, string duration, string comments);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Delete/{idGroomer}/{idDog}/{startTime}")]
-        string DeleteAppointment(string idGroomer, string idDog, string startTime);
+        [WebGet(UriTemplate = "Delete/{idGroomer}/{idDog}/{startTime}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess DeleteAppointment(string idGroomer, string idDog, string startTime);
     }
 
 
@@ -309,6 +309,64 @@ namespace DogGrooming_WCF
         {
             IdBreed = idBreed;
             Name = name;
+        }
+    }
+
+    [DataContract]
+    public class DAppointment
+    {
+        [DataMember]
+        public int IdGroomer { get; set; }
+
+        [DataMember]
+        public string GroomerName { get; set; }
+
+        [DataMember]
+        public int IdDog { get; set; }
+
+        [DataMember]
+        public string DogName { get; set; }
+
+        [DataMember]
+        public int IdClient { get; set; }
+
+        [DataMember]
+        public string ClientName { get; set; }
+
+        [DataMember]
+        public string StartTime { get; set; }
+
+        [DataMember]
+        public int IdGroomingType { get; set; }
+
+        [DataMember]
+        public string GroomingTypeName { get; set; }
+
+        [DataMember]
+        public int Duration { get; set; }
+
+        [DataMember]
+        public string Location { get; set; }
+
+        [DataMember]
+        public string Comments { get; set; }
+
+        public DAppointment(int idGroomer, string groomerName, int idDog, string dogName, 
+            int idClient, string clientName, string startTime, int idGroomingType,
+            string groomingTypeName, int duration, string location, string comments)
+        {
+            IdGroomer = idGroomer;
+            GroomerName = groomerName;
+            IdDog = idDog;
+            DogName = dogName;
+            IdClient = idClient;
+            ClientName = clientName;
+            StartTime = startTime;
+            IdGroomingType = idGroomingType;
+            GroomingTypeName = groomingTypeName;
+            Duration = duration;
+            Location = location;
+            Comments = comments;
         }
     }
 

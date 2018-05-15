@@ -10,10 +10,9 @@ namespace DogGrooming_WCF
 {
     public class Groomer : IGroomer
     {
-        public string AuthenticateGroomer(string groomerEmail, string groomerPassword)
+        public Dictionary<string, string> AuthenticateGroomer(string groomerEmail, string groomerPassword)
         {
-            var idGroomer = Authenticate(groomerEmail, groomerPassword);
-            return (idGroomer>0) ? "Success: "+idGroomer : "Fail";
+            return Authenticate(groomerEmail, groomerPassword);
         }
 
         public string CreateGroomer(string firstname, string surname, string email, string password)
@@ -69,13 +68,25 @@ namespace DogGrooming_WCF
         //====================================================//
 
 
-        private int Authenticate(string email, string password)
+        private Dictionary<string, string> Authenticate(string email, string password)
         {
-            var result = MySqlDatabase.RunQuery("SELECT idGroomer FROM Groomer WHERE `email`='"+email+"' AND `password`='"+password+"'");
-            if (result == null) return -1;
-            if (result.Rows.Count < 1 | result.Columns.Count < 1) return -1;
-            if (!int.TryParse(result.Rows[0][0].ToString(), out int id)) return -1;
-            return id;
+            try
+            {
+                var result = MySqlDatabase.RunQuery("SELECT idGroomer, FirstName, Surname, Email FROM Groomer WHERE `email`='" + email + "' AND `password`='" + password + "'");
+                if (result == null) throw new FaultException<string>("User does not exist", "User does not exist");
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 4)) return null;
+
+                var userDetails = new Dictionary<string, string>
+                {
+                    { "idGroomer", result.Rows[0]["idGroomer"].ToString() },
+                    { "FirstName", result.Rows[0]["FirstName"].ToString() },
+                    { "Surname", result.Rows[0]["Surname"].ToString() },
+                    { "Email", result.Rows[0]["Email"].ToString() }
+                };
+
+                return userDetails;
+            }
+            catch (Exception e) { throw new FaultException<string>("User does not exist", "User does not exist"); }
         }
 
         private int Create(string firstname, string surname, string email, string password)

@@ -33,7 +33,7 @@ namespace DogGrooming_WCF
 
         [OperationContract]
         [WebGet(UriTemplate = "Authenticate/{groomerEmail}/{groomerPassword}")]
-        string AuthenticateGroomer(string groomerEmail, string groomerPassword);
+        Dictionary<string,string> AuthenticateGroomer(string groomerEmail, string groomerPassword);
     }
 
 
@@ -68,6 +68,10 @@ namespace DogGrooming_WCF
         [OperationContract]
         [WebGet(UriTemplate = "View/{idDog}")]
         Dictionary<string, string> GetDogById(string idDog);
+
+        //[OperationContract]
+        //[WebGet(UriTemplate = "ViewAllClient/{idClient}")]
+        //Dictionary<string, string> GetDogByOwner(string idClient);
 
         [OperationContract]
         [WebGet(UriTemplate = "Add/{idClient}/{name}/{birthDate}/{idBreed}")]

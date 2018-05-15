@@ -88,9 +88,17 @@ namespace DogGrooming_WCF
 
         private int Create(int idClient, string name, DateTime birthDate, int idBreed)
         {
-            // Insert into database
-            // Retreve idDog and send it back
-            return 1;
+            try
+            {
+                var query = string.Concat("INSERT INTO Dog (idClient,`Name`,BirthDate,idBreed) VALUES (",idClient,",'", name, "', '", birthDate.ToString("yyyy-MM-dd HH:mm:ss"), "',", idBreed, "); SELECT LAST_INSERT_ID(); ");
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count < 1)) throw new FaultException<string>("Could not create dog", "Could not create dog");
+                if (int.TryParse(result.Rows[0][0].ToString(), out int idDog)){
+                    return idDog;
+                }
+                else { throw new FaultException<string>("Could not create dog", "Could not create dog"); }
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
         private bool Delete(int idDog)

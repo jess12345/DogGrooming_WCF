@@ -127,20 +127,20 @@ namespace DogGrooming_WCF
     public interface IBreed
     {
         [OperationContract]
-        [WebGet(UriTemplate = "ViewAll")]
-        List<Dictionary<string, string>> GetBreedList();
+        [WebGet(UriTemplate = "ViewAll", ResponseFormat = WebMessageFormat.Json)]
+        List<DBreed> GetBreedList();
 
         [OperationContract]
-        [WebGet(UriTemplate = "View/{idBreed}")]
-        Dictionary<string, string> GetBreedById(string idBreed);
+        [WebGet(UriTemplate = "View/{idBreed}", ResponseFormat = WebMessageFormat.Json)]
+        DBreed GetBreedById(string idBreed);
 
         [OperationContract]
-        [WebGet(UriTemplate= "Add/{name}")]
-        string CreateBreed( string name);
+        [WebGet(UriTemplate= "Add/{name}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess CreateBreed( string name);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Delete/{idBreed}")]
-        string DeleteBreed(string idBreed);
+        [WebGet(UriTemplate = "Delete/{idBreed}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess DeleteBreed(string idBreed);
     }
 
 
@@ -292,6 +292,22 @@ namespace DogGrooming_WCF
         public DGroomerType(int idGroomerType, string name)
         {
             IdGroomerType = idGroomerType;
+            Name = name;
+        }
+    }
+
+    [DataContract]
+    public class DBreed
+    {
+        [DataMember]
+        public int IdBreed { get; set; }
+
+        [DataMember]
+        public string Name { get; set; }
+
+        public DBreed(int idBreed, string name)
+        {
+            IdBreed = idBreed;
             Name = name;
         }
     }

@@ -9,29 +9,29 @@ namespace DogGrooming_WCF
 {
     public class Breed : IBreed
     {
-        public string CreateBreed(string name)
+        public DSuccess CreateBreed(string name)
         {
             int idBreed = Create(name);
-            if (idBreed > 0) return "Success: " + idBreed;
+            if (idBreed > 0) return new DSuccess(idBreed);
             else throw new FaultException<string>("Breed already exist", "Breed already exist");
         }
 
-        public string DeleteBreed(string idBreed)
+        public DSuccess DeleteBreed(string idBreed)
         {
             if (int.TryParse(idBreed, out int id))
             {
-                if (Delete(id)) return "Success";
+                if (Delete(id)) return new DSuccess(id);
                 else throw new FaultException<string>("Cannot delete breed", "Cannot delete breed");
             }
             else { throw new FaultException<string>("Invalid idBreed", "Invalid idBreed"); }
         }
 
-        public List<Dictionary<string, string>> GetBreedList()
+        public List<DBreed> GetBreedList()
         {
             return GetAll();
         }
 
-        public Dictionary<string, string> GetBreedById(string idBreed)
+        public DBreed GetBreedById(string idBreed)
         {
             if (int.TryParse(idBreed, out int id)) return GetById(id);
             else throw new FaultException<string>("Cannot find breed", "Cannot find breed");
@@ -59,41 +59,40 @@ namespace DogGrooming_WCF
         }
 
 
-        private List<Dictionary<string, string>> GetAll()
+        private List<DBreed> GetAll()
         {
-            // Retrieve all breeds
-            var allBreed = new List<Dictionary<string, string>>();
-            // Put information in a list of dictionary
+            try
+            {
+                var query = string.Concat("SELECT idBreed, `Name` FROM Breed");
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 2)) return null;
 
-            var breedDetails = new Dictionary<string, string>();
-            breedDetails.Add("idBreed", "1");
-            breedDetails.Add("Name", "Retriever (Labrador)");
-            allBreed.Add(breedDetails);
-
-            breedDetails = new Dictionary<string, string>();
-            breedDetails.Add("idBreed", "2");
-            breedDetails.Add("Name", "German Shepherd");
-            allBreed.Add(breedDetails);
-
-            breedDetails = new Dictionary<string, string>();
-            breedDetails.Add("idBreed", "3");
-            breedDetails.Add("Name", "French Bulldog");
-            allBreed.Add(breedDetails);
-
-            // Send list of dictionary back
-            return allBreed;
+                var allGroomingTypes = new List<DBreed>();
+                for (int i = 0; i < result.Rows.Count; i++)
+                {
+                    allGroomingTypes.Add(new DBreed(
+                        int.Parse(result.Rows[i]["idBreed"].ToString()),
+                        result.Rows[i]["Name"].ToString()
+                        ));
+                }
+                return allGroomingTypes;
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
-        private Dictionary<string, string> GetById(int idBreed)
+        private DBreed GetById(int idBreed)
         {
-            // Retreve idBreed
-            // Put information into a dictionary
-            var breedDetails = new Dictionary<string, string>();
-            breedDetails.Add("idBreed", "1");
-            breedDetails.Add("Name", "Retriever (Labrador)");
-
-            // Send dictionary back
-            return breedDetails;
+            try
+            {
+                var query = string.Concat("SELECT idBreed, `Name` FROM Breed WHERE idBreed = " + idBreed);
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 2)) return null;
+                return new DBreed(
+                        int.Parse(result.Rows[0]["idBreed"].ToString()),
+                        result.Rows[0]["Name"].ToString()
+                        );
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
     }

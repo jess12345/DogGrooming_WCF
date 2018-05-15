@@ -15,39 +15,39 @@ namespace DogGrooming_WCF
             return Authenticate(groomerEmail, groomerPassword);
         }
 
-        public string CreateGroomer(string firstname, string surname, string email, string password)
+        public DSuccess CreateGroomer(string firstname, string surname, string email, string password)
         {
             int idGroomer = Create(firstname, surname, email, password);
-            if (idGroomer > 0) return "Success: " + idGroomer;
+            if (idGroomer > 0) return new DSuccess(idGroomer);
             else throw new FaultException<string>("User already exist", "User already exist");
         }
 
-        public string DeleteGroomer(string idGroomer)
+        public DSuccess DeleteGroomer(string idGroomer)
         {
             if (int.TryParse(idGroomer, out int id))
             {
-                if (Delete(id)) return "Success";
+                if (Delete(id)) return new DSuccess(id);
                 else throw new FaultException<string>("Cannot delete groomer", "Cannot delete groomer");
             }
             else { throw new FaultException<string>("Invalid idGroomer", "Invalid idGroomer"); }
         }
 
-        public Dictionary<string, string> GetGroomerById(string idGroomer)
+        public DGroomer GetGroomerById(string idGroomer)
         {
             if (int.TryParse(idGroomer, out int id)) return GetById(id);
             else return null;
         }
 
-        public List<Dictionary<string, string>> GetGroomerList()
+        public List<DGroomer> GetGroomerList()
         {
             return GetAll();
         }
 
-        public string UpdateGroomer(string idGroomer, string firstname, string surname, string email, string password)
+        public DSuccess UpdateGroomer(string idGroomer, string firstname, string surname, string email, string password)
         {
             if (int.TryParse(idGroomer, out int id))
             {
-                if (Update(id, firstname, surname, email, password)) return "Success";
+                if (Update(id, firstname, surname, email, password)) return new DSuccess(id);
                 else throw new FaultException<string>("Cannot update groomer", "Cannot update groomer");
             }
             else { throw new FaultException<string>("Invalid idGroomer", "Invalid idGroomer"); }
@@ -101,35 +101,15 @@ namespace DogGrooming_WCF
             return true;
         }
 
-        private Dictionary<string, string> GetById(int idGroomer)
+        private DGroomer GetById(int idGroomer)
         {
-            // Retreve idGroomer
-            // Put information into a dictionary
-            var groomerDetails = new Dictionary<string, string>();
-            groomerDetails.Add("idGroomer", "1");
-            groomerDetails.Add("FirstName", "Tom");
-            groomerDetails.Add("Surname", "Groomer");
-            groomerDetails.Add("Email", "tomgroomer@gmail.com");
-
-            // Send dictionary back
-            return groomerDetails;
+            return new DGroomer(1, "Tom", "Groomer", "tomgroomer@gmail.com"); //Dummy Data
         }
 
-        private List<Dictionary<string, string>> GetAll()
+        private List<DGroomer> GetAll()
         {
-            // Retrieve all groomers
-            var allGroomers = new List<Dictionary<string, string>>();
-            // Put information in a list of dictionary
-
-            var groomerDetails = new Dictionary<string, string>();
-            groomerDetails.Add("idGroomer", "1");
-            groomerDetails.Add("FirstName", "Tom");
-            groomerDetails.Add("Surname", "Groomer");
-            groomerDetails.Add("Email", "tomgroomer@gmail.com");
-
-            allGroomers.Add(groomerDetails);
-
-            // Send list of dictionary back
+            var allGroomers = new List<DGroomer>();
+            allGroomers.Add(new DGroomer(1, "Tom", "Groomer", "tomgroomer@gmail.com")); //Dummy Data
             return allGroomers;
         }
 
@@ -139,6 +119,5 @@ namespace DogGrooming_WCF
             // Sent status
             return true;
         }
-
     }
 }

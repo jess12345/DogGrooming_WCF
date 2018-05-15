@@ -12,24 +12,24 @@ namespace DogGrooming_WCF
     public interface IGroomer
     {
         [OperationContract]
-        [WebGet(UriTemplate = "ViewAll")]
-        List<Dictionary<string, string>> GetGroomerList();
+        [WebGet(UriTemplate = "ViewAll", ResponseFormat = WebMessageFormat.Json)]
+        List<DGroomer> GetGroomerList();
 
         [OperationContract]
-        [WebGet(UriTemplate = "View/{idGroomer}")]
-        Dictionary<string, string> GetGroomerById(string idGroomer);
+        [WebGet(UriTemplate = "View/{idGroomer}", ResponseFormat = WebMessageFormat.Json)]
+        DGroomer GetGroomerById(string idGroomer);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Add/{firstName}/{surname}/{email}/{password}")]
-        string CreateGroomer(string firstname, string surname, string email, string password);
+        [WebGet(UriTemplate = "Add/{firstName}/{surname}/{email}/{password}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess CreateGroomer(string firstname, string surname, string email, string password);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Update/{idGroomer}/{firstName}/{surname}/{email}/{password}")]
-        string UpdateGroomer(string idGroomer, string firstname, string surname, string email, string password);
+        [WebGet(UriTemplate = "Update/{idGroomer}/{firstName}/{surname}/{email}/{password}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess UpdateGroomer(string idGroomer, string firstname, string surname, string email, string password);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Delete/{idGroomer}")]
-        string DeleteGroomer(string idGroomer);
+        [WebGet(UriTemplate = "Delete/{idGroomer}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess DeleteGroomer(string idGroomer);
 
         [OperationContract]
         [WebGet(UriTemplate = "Authenticate/{groomerEmail}/{groomerPassword}", ResponseFormat = WebMessageFormat.Json)]
@@ -232,6 +232,17 @@ namespace DogGrooming_WCF
         }
     }
 
+    [DataContract]
+    public class DSuccess
+    {
+        [DataMember]
+        public int Id { get; set; }
+
+        public DSuccess(int id)
+        {
+            Id = id;
+        }
+    }
 
 
 }

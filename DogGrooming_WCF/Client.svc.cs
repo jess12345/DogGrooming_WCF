@@ -115,9 +115,18 @@ namespace DogGrooming_WCF
 
         private int Create(string firstname, string surname, string email, string password, string homeAddress, int mobilePh, int workPhone, int homePhone)
         {
-            // Insert into database
-            // Retreve idClient and send it back
-            return 1;
+            try
+            {
+                var query = string.Concat("INSERT INTO `client`(`FirstName`,`Surname`,`Email`,`Password`,`HomeAddress`,`MobilePh`,`WorkPh`,`HomePh`)VALUES('",firstname,"','",surname,"','",email,"','",password,"','", homeAddress, "',",mobilePh,",",workPhone,",",homePhone,");SELECT LAST_INSERT_ID();");
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count < 1)) throw new FaultException<string>("Could not create client", "Could not create client");
+                if (int.TryParse(result.Rows[0][0].ToString(), out int idClient))
+                {
+                    return idClient;
+                }
+                else { throw new FaultException<string>("Could not create client", "Could not create client"); }
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
         private bool Delete(int idClient)

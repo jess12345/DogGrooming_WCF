@@ -14,7 +14,7 @@ namespace DogGrooming_WCF
             return Authenticate(clientEmail, clientPassword);
         }
 
-        public string CreateClient(string firstname, string surname, string email, string password,
+        public DSuccess CreateClient(string firstname, string surname, string email, string password,
             string homeAddress, string mobilePh, string workPhone, string homePhone)
         {
             if (int.TryParse(mobilePh, out int mPh))
@@ -24,7 +24,7 @@ namespace DogGrooming_WCF
                     if (int.TryParse(homePhone, out int hPh))
                     {
                         int idClient = Create(firstname, surname, email, password, homeAddress, mPh, wPh, hPh);
-                        if (idClient > 0) return "Success: " + idClient;
+                        if (idClient > 0) return new DSuccess(idClient);
                         else throw new FaultException<string>("User already exist", "User already exist");
                     }
                     else { throw new FaultException<string>("Invalid homePhone", "Invalid homePhone"); }
@@ -34,28 +34,28 @@ namespace DogGrooming_WCF
             else { throw new FaultException<string>("Invalid mobilePh", "Invalid mobilePh"); }
         }
 
-        public string DeleteClient(string idClient)
+        public DSuccess DeleteClient(string idClient)
         {
             if (int.TryParse(idClient, out int id))
             {
-                if (Delete(id)) return "Success";
+                if (Delete(id)) return new DSuccess(id);
                 else throw new FaultException<string>("Cannot delete client", "Cannot delete client");
             }
             else { throw new FaultException<string>("Invalid idClient", "Invalid idClient"); }
         }
 
-        public Dictionary<string, string> GetClientById(string idClient)
+        public DClient GetClientById(string idClient)
         {
             if (int.TryParse(idClient, out int id)) return GetById(id);
             else throw new FaultException<string>("Cannot find client", "Cannot find client");
         }
 
-        public List<Dictionary<string, string>> GetClientList()
+        public List<DClient> GetClientList()
         {
             return GetAll();
         }
 
-        public string UpdateClient(string idClient, string firstname, string surname, string email, string password, string homeAddress, string mobilePh, string workPhone, string homePhone)
+        public DSuccess UpdateClient(string idClient, string firstname, string surname, string email, string password, string homeAddress, string mobilePh, string workPhone, string homePhone)
         {
             if (int.TryParse(idClient, out int id))
             {
@@ -68,7 +68,7 @@ namespace DogGrooming_WCF
                             if (Update(id, firstname, surname, 
                                 email, password, homeAddress,
                                 mPh, wPh, hPh)) 
-                            return "Success";
+                            return new DSuccess(id);
                             else throw new FaultException<string>("Cannot update client", "Cannot update client");
                         }
                         else { throw new FaultException<string>("Invalid homePhone", "Invalid homePhone"); }
@@ -135,43 +135,15 @@ namespace DogGrooming_WCF
             return true;
         }
 
-        private Dictionary<string, string> GetById(int idClient)
+        private DClient GetById(int idClient)
         {
-            // Retreve idGroomer
-            // Put information into a dictionary
-            var clientDetails = new Dictionary<string, string>();
-            clientDetails.Add("idClient", "1");
-            clientDetails.Add("FirstName", "Dog");
-            clientDetails.Add("Surname", "Lover");
-            clientDetails.Add("Email", "doglover@gmail.com");
-            clientDetails.Add("HomeAddress", "12 Puppy Street, Carlton, Melbourne");
-            clientDetails.Add("MobilePh", "1234567890");
-            clientDetails.Add("WorkPh", "");
-            clientDetails.Add("HomePh", "");
-
-            // Send dictionary back
-            return clientDetails;
+            return new DClient(1,"Dog", "Lover", "doglover@gmail.com", "12 Puppy Street, Carlton, Melbourne", 1234567890,0,0); // Dummy Data
         }
-
-
-        private List<Dictionary<string, string>> GetAll()
+        
+        private List<DClient> GetAll()
         {
-            // Retrieve all clients
-            var allClients = new List<Dictionary<string, string>>();
-            // Put information in a list of dictionary
-
-            var clientDetails = new Dictionary<string, string>();
-            clientDetails.Add("idClient", "1");
-            clientDetails.Add("FirstName", "Dog");
-            clientDetails.Add("Surname", "Lover");
-            clientDetails.Add("Email", "doglover@gmail.com");
-            clientDetails.Add("HomeAddress", "12 Puppy Street, Carlton, Melbourne");
-            clientDetails.Add("MobilePh", "1234567890");
-            clientDetails.Add("WorkPh", "");
-            clientDetails.Add("HomePh", "");
-            allClients.Add(clientDetails);
-
-            // Send list of dictionary back
+            var allClients = new List<DClient>();
+            allClients.Add(new DClient(1, "Dog", "Lover", "doglover@gmail.com", "12 Puppy Street, Carlton, Melbourne", 1234567890, 0, 0)); // Dummy Data
             return allClients;
         }
 

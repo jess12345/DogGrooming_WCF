@@ -70,7 +70,7 @@ namespace DogGrooming_WCF
     public interface IDog
     {
         [OperationContract]
-        [WebGet(UriTemplate = "ViewAll")]
+        [WebGet(UriTemplate = "ViewAll", ResponseFormat = WebMessageFormat.Json)]
         List<Dictionary<string, string>> GetDogList();
 
         [OperationContract]
@@ -98,24 +98,24 @@ namespace DogGrooming_WCF
     public interface IClient
     {
         [OperationContract]
-        [WebGet(UriTemplate = "ViewAll")]
-        List<Dictionary<string, string>> GetClientList();
+        [WebGet(UriTemplate = "ViewAll", ResponseFormat = WebMessageFormat.Json)]
+        List<DClient> GetClientList();
 
         [OperationContract]
-        [WebGet(UriTemplate = "View/{idClient}")]
-        Dictionary<string, string> GetClientById(string idClient);
+        [WebGet(UriTemplate = "View/{idClient}", ResponseFormat = WebMessageFormat.Json)]
+        DClient GetClientById(string idClient);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Add/{firstname}/{surname}/{email}/{password}/{homeAddress}/{mobilePh}/{workPhone}/{homePhone}")]
-        string CreateClient(string firstname, string surname, string email, string password, string homeAddress, string mobilePh, string workPhone, string homePhone);
+        [WebGet(UriTemplate = "Add/{firstname}/{surname}/{email}/{password}/{homeAddress}/{mobilePh}/{workPhone}/{homePhone}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess CreateClient(string firstname, string surname, string email, string password, string homeAddress, string mobilePh, string workPhone, string homePhone);
 
         [OperationContract]
-        [WebGet(UriTemplate= "Update/{idClient}/{firstname}/{surname}/{email}/{password}/{homeAddress}/{mobilePh}/{workPhone}/{homePhone}")]
-        string UpdateClient(string idClient, string firstname, string surname, string email, string password, string homeAddress, string mobilePh, string workPhone, string homePhone);
+        [WebGet(UriTemplate= "Update/{idClient}/{firstname}/{surname}/{email}/{password}/{homeAddress}/{mobilePh}/{workPhone}/{homePhone}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess UpdateClient(string idClient, string firstname, string surname, string email, string password, string homeAddress, string mobilePh, string workPhone, string homePhone);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Delete/{idClient}")]
-        string DeleteClient(string idClient);
+        [WebGet(UriTemplate = "Delete/{idClient}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess DeleteClient(string idClient);
 
         [OperationContract]
         [WebGet(UriTemplate = "Authenticate/{clientEmail}/{clientPassword}", ResponseFormat = WebMessageFormat.Json)]

@@ -148,20 +148,20 @@ namespace DogGrooming_WCF
     public interface IGroomingType
     {
         [OperationContract]
-        [WebGet(UriTemplate = "ViewAll")]
-        List<Dictionary<string, string>> GeGroomingTypeList();
+        [WebGet(UriTemplate = "ViewAll", ResponseFormat = WebMessageFormat.Json)]
+        List<DGroomerType> GeGroomingTypeList();
 
         [OperationContract]
-        [WebGet(UriTemplate = "View/{idGroomingType}")]
-        Dictionary<string, string> GetGroomingById(string idGroomingType);
+        [WebGet(UriTemplate = "View/{idGroomingType}", ResponseFormat = WebMessageFormat.Json)]
+        DGroomerType GetGroomingById(string idGroomingType);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Add/{name}")]
-        string CreateGroomingType(string name);
+        [WebGet(UriTemplate = "Add/{name}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess CreateGroomingType(string name);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Delete/{idGroomingType}")]
-        string DeleteGroomingType(string idGroomingType);
+        [WebGet(UriTemplate = "Delete/{idGroomingType}", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess DeleteGroomingType(string idGroomingType);
     }
 
 
@@ -280,5 +280,20 @@ namespace DogGrooming_WCF
         }
     }
 
+    [DataContract]
+    public class DGroomerType
+    {
+        [DataMember]
+        public int IdGroomerType { get; set; }
+
+        [DataMember]
+        public string Name { get; set; }
+
+        public DGroomerType(int idGroomerType, string name)
+        {
+            IdGroomerType = idGroomerType;
+            Name = name;
+        }
+    }
 
 }

@@ -11,32 +11,32 @@ namespace DogGrooming_WCF
     // NOTE: In order to launch WCF Test Client for testing this service, please select GroomingType.svc or GroomingType.svc.cs at the Solution Explorer and start debugging.
     public class GroomingType : IGroomingType
     {
-        public string CreateGroomingType(string name)
+        public DSuccess CreateGroomingType(string name)
         {
             int idGroomingType = Create(name);
-            if (idGroomingType > 0) return "Success: " + idGroomingType;
+            if (idGroomingType > 0) return new DSuccess(idGroomingType);
             else throw new FaultException<string>("Grooming type already exist", "Grooming type already exist");
         }
 
-        public string DeleteGroomingType(string idGroomingType)
+        public DSuccess DeleteGroomingType(string idGroomingType)
         {
             if (int.TryParse(idGroomingType, out int id))
             {
-                if (Delete(id)) return "Success";
+                if (Delete(id)) return new DSuccess(id);
                 else throw new FaultException<string>("Cannot delete grooming type", "Cannot delete grooming type");
             }
             else { throw new FaultException<string>("Invalid idGroomingType", "Invalid idGroomingType"); }
         }
 
-        public List<Dictionary<string, string>> GeGroomingTypeList()
+        public List<DGroomerType> GeGroomingTypeList()
         {
             return GetAll();
         }
 
-        public Dictionary<string, string> GetGroomingById(string idGroomingType)
+        public DGroomerType GetGroomingById(string idGroomingType)
         {
             if (int.TryParse(idGroomingType, out int id)) return GetById(id);
-            else return null;
+            else throw new FaultException<string>("Invalid idGroomingType", "Invalid idGroomingType"); ;
         }
 
 
@@ -61,44 +61,30 @@ namespace DogGrooming_WCF
         }
 
 
-        private List<Dictionary<string, string>> GetAll()
+        private List<DGroomerType> GetAll()
         {
             try
             {
-                // Retrieve all appointments
                 var query = string.Concat("SELECT idGroomingType, `Name` FROM GroomingType");
                 var result = MySqlDatabase.RunQuery(query);
                 if ((result.Rows.Count < 1) & (result.Columns.Count != 2)) return null;
-
-                // Put information into a dictionary list
-                var allGroomingTypes = new List<Dictionary<string, string>>();
-                Dictionary<string, string> groomingDetails;
+                
+                var allGroomingTypes = new List<DGroomerType>();
                 for (int i = 0; i < result.Rows.Count; i++)
                 {
-                    groomingDetails = new Dictionary<string, string>
-                    {
-                        { "idGroomingType", result.Rows[i]["idGroomingType"].ToString() },
-                        { "Name", result.Rows[i]["Name"].ToString() }
-                    };
-                    allGroomingTypes.Add(groomingDetails);
+                    allGroomingTypes.Add(new DGroomerType(
+                        int.Parse(result.Rows[i]["idGroomingType"].ToString()),
+                        result.Rows[i]["Name"].ToString()
+                        ));
                 }
-
-                // Send list of dictionary back
                 return allGroomingTypes;
             }
             catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
-        private Dictionary<string, string> GetById(int idGroomingType)
+        private DGroomerType GetById(int idGroomingType)
         {
-            // Retreve idGroomingType
-            // Put information into a dictionary
-            var typeDetails = new Dictionary<string, string>();
-            typeDetails.Add("idGroomingType", "3");
-            typeDetails.Add("Name", "Delux grooming");
-
-            // Send dictionary back
-            return typeDetails;
+            return new DGroomerType(3, "Delux grooming"); // Dummy Data
         }
 
 

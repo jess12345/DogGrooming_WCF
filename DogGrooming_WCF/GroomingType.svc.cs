@@ -63,27 +63,30 @@ namespace DogGrooming_WCF
 
         private List<Dictionary<string, string>> GetAll()
         {
-            // Retrieve all grooming type
-            var allGroomingType = new List<Dictionary<string, string>>();
-            // Put information in a list of dictionary
+            try
+            {
+                // Retrieve all appointments
+                var query = string.Concat("SELECT idGroomingType, `Name` FROM GroomingType");
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 2)) return null;
 
-            var typeDetails = new Dictionary<string, string>();
-            typeDetails.Add("idGroomingType", "1");
-            typeDetails.Add("Name", "Wash only");
-            allGroomingType.Add(typeDetails);
+                // Put information into a dictionary list
+                var allGroomingTypes = new List<Dictionary<string, string>>();
+                Dictionary<string, string> groomingDetails;
+                for (int i = 0; i < result.Rows.Count; i++)
+                {
+                    groomingDetails = new Dictionary<string, string>
+                    {
+                        { "idGroomingType", result.Rows[i]["idGroomingType"].ToString() },
+                        { "Name", result.Rows[i]["Name"].ToString() }
+                    };
+                    allGroomingTypes.Add(groomingDetails);
+                }
 
-            typeDetails = new Dictionary<string, string>();
-            typeDetails.Add("idGroomingType", "2");
-            typeDetails.Add("Name", "Wash and nail clipping");
-            allGroomingType.Add(typeDetails);
-
-            typeDetails = new Dictionary<string, string>();
-            typeDetails.Add("idGroomingType", "3");
-            typeDetails.Add("Name", "Delux grooming");
-            allGroomingType.Add(typeDetails);
-
-            // Send list of dictionary back
-            return allGroomingType;
+                // Send list of dictionary back
+                return allGroomingTypes;
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
 
         private Dictionary<string, string> GetById(int idGroomingType)

@@ -103,7 +103,11 @@ namespace DogGrooming_WCF
 
         private bool Delete(int idDog)
         {
-            // Delete dogs and appointments from the database
+            try
+            {
+                var result = MySqlDatabase.RunQuery("DELETE FROM Dog WHERE idDog = "+idDog);
+            }
+            catch (Exception e) {}
             return true;
         }
 

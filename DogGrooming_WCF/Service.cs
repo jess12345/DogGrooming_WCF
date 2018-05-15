@@ -32,8 +32,8 @@ namespace DogGrooming_WCF
         string DeleteGroomer(string idGroomer);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Authenticate/{groomerEmail}/{groomerPassword}")]
-        Dictionary<string,string> AuthenticateGroomer(string groomerEmail, string groomerPassword);
+        [WebGet(UriTemplate = "Authenticate/{groomerEmail}/{groomerPassword}", ResponseFormat = WebMessageFormat.Json)]
+        DGroomer AuthenticateGroomer(string groomerEmail, string groomerPassword);
     }
 
 
@@ -208,6 +208,29 @@ namespace DogGrooming_WCF
         }
     }
 
+    [DataContract]
+    public class DGroomer
+    {
+        [DataMember]
+        public int IdGroomer { get; set; }
+
+        [DataMember]
+        public string FirstName { get; set; }
+
+        [DataMember]
+        public string Surname { get; set; }
+
+        [DataMember]
+        public string Email { get; set; }
+
+        public DGroomer(int idGroomer, string firstname, string surname, string email)
+        {
+            IdGroomer = idGroomer;
+            FirstName = firstname;
+            Surname = surname;
+            Email = email;
+        }
+    }
 
 
 

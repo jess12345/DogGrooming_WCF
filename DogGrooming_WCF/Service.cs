@@ -45,6 +45,14 @@ namespace DogGrooming_WCF
         List<Dictionary<string, string>> GetAppointmentList();
 
         [OperationContract]
+        [WebGet(UriTemplate = "ViewAllClient/{idClient}")]
+        List<Dictionary<string, string>> GetAppointmentsByClient(string idClient);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "ViewAllGroomer/idGroomer")]
+        List<Dictionary<string, string>> GetAppointmentByGroomer(string idGroomer);
+
+        [OperationContract]
         [WebGet(UriTemplate = "View/{idGroomer}/{idDog}/{startTime}")]
         Dictionary<string, string> GetAppointmentById(string idGroomer, string idDog, string startTime);
 
@@ -110,8 +118,8 @@ namespace DogGrooming_WCF
         string DeleteClient(string idClient);
 
         [OperationContract]
-        [WebGet(UriTemplate = "Authenticate/{clientEmail}/{clientPassword}")]
-        Dictionary<string, string> AuthenticateClient(string clientEmail, string clientPassword);
+        [WebGet(UriTemplate = "Authenticate/{clientEmail}/{clientPassword}", ResponseFormat = WebMessageFormat.Json)]
+        DClient AuthenticateClient(string clientEmail, string clientPassword);
     }
 
 
@@ -155,5 +163,52 @@ namespace DogGrooming_WCF
         [WebGet(UriTemplate = "Delete/{idGroomingType}")]
         string DeleteGroomingType(string idGroomingType);
     }
+
+
+
+
+
+    [DataContract]
+    public class DClient
+    {
+        [DataMember]
+        public int IdClient { get; set; }
+
+        [DataMember]
+        public string FirstName { get; set; }
+
+        [DataMember]
+        public string Surname { get; set; }
+
+        [DataMember]
+        public string Email { get; set; }
+
+        [DataMember]
+        public string HomeAddress { get; set; }
+
+        [DataMember]
+        public int MobilePh { get; set; }
+
+        [DataMember]
+        public int WorkPh { get; set; }
+
+        [DataMember]
+        public int HomePh { get; set; }
+        
+        public DClient(int idClient, string firstname, string surname, string email, string homeAddress, int mobilePh, int workPh, int homePh)
+        {
+            IdClient = IdClient;
+            FirstName = firstname;
+            Surname = surname;
+            Email = email;
+            HomeAddress = homeAddress;
+            MobilePh = mobilePh;
+            WorkPh = workPh;
+            HomePh = homePh;
+        }
+    }
+
+
+
 
 }

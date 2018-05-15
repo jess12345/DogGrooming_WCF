@@ -9,7 +9,7 @@ namespace DogGrooming_WCF
 {
     public class Client : IClient
     {
-        public Dictionary<string, string> AuthenticateClient(string clientEmail, string clientPassword)
+        public DClient AuthenticateClient(string clientEmail, string clientPassword)
         {
             return Authenticate(clientEmail, clientPassword);
         }
@@ -88,7 +88,7 @@ namespace DogGrooming_WCF
         //====================================================//
 
 
-        private Dictionary<string,string> Authenticate(string email, string password)
+        private DClient Authenticate(string email, string password)
         {
             try
             {
@@ -97,18 +97,18 @@ namespace DogGrooming_WCF
                 if (result == null) throw new FaultException<string>("User does not exist", "User does not exist");
                 if ((result.Rows.Count != 1) & (result.Columns.Count != 8)) return null;
 
-                var userDetails = new Dictionary<string, string>
-                {
-                    { "idClient", result.Rows[0]["idClient"].ToString() },
-                    { "FirstName", result.Rows[0]["FirstName"].ToString() },
-                    { "Surname", result.Rows[0]["Surname"].ToString() },
-                    { "Email", result.Rows[0]["Email"].ToString() },
-                    { "HomeAddress", result.Rows[0]["HomeAddress"].ToString() },
-                    { "MobilePh", result.Rows[0]["MobilePh"].ToString() },
-                    { "WorkPh", result.Rows[0]["WorkPh"].ToString() },
-                    { "HomePh", result.Rows[0]["HomePh"].ToString() }
-                };
-                return userDetails;
+                var client = new DClient(
+                    int.Parse(result.Rows[0]["idClient"].ToString()),
+                    result.Rows[0]["FirstName"].ToString(),
+                    result.Rows[0]["Surname"].ToString(),
+                    result.Rows[0]["Email"].ToString(),
+                    result.Rows[0]["HomeAddress"].ToString(),
+                    int.Parse(result.Rows[0]["MobilePh"].ToString()),
+                    int.Parse(result.Rows[0]["WorkPh"].ToString()),
+                    int.Parse(result.Rows[0]["HomePh"].ToString())
+                    );
+                
+                return client;
             }
             catch (Exception e) { throw new FaultException<string>("User does not exist", "User does not exist"); }
         }

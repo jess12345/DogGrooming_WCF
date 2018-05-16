@@ -189,18 +189,18 @@ namespace DogGrooming_WCF
                 for (int i = 0; i < result.Rows.Count; i++)
                 {
                     allAppointment.Add(new DAppointment(
-                        int.Parse(result.Rows[0]["idGroomer"].ToString()),
-                        result.Rows[0]["GroomerName"].ToString(),
-                        int.Parse(result.Rows[0]["idDog"].ToString()),
-                        result.Rows[0]["DogName"].ToString(),
-                        int.Parse(result.Rows[0]["idClient"].ToString()),
-                        result.Rows[0]["ClientName"].ToString(),
-                        result.Rows[0]["StartTime"].ToString(),
-                        int.Parse(result.Rows[0]["idGroomingType"].ToString()),
-                        result.Rows[0]["GroomingTypeName"].ToString(),
-                        int.Parse(result.Rows[0]["Duration"].ToString()),
-                        result.Rows[0]["Location"].ToString(),
-                        result.Rows[0]["Comments"].ToString()
+                        int.Parse(result.Rows[i]["idGroomer"].ToString()),
+                        result.Rows[i]["GroomerName"].ToString(),
+                        int.Parse(result.Rows[i]["idDog"].ToString()),
+                        result.Rows[i]["DogName"].ToString(),
+                        int.Parse(result.Rows[i]["idClient"].ToString()),
+                        result.Rows[i]["ClientName"].ToString(),
+                        result.Rows[i]["StartTime"].ToString(),
+                        int.Parse(result.Rows[i]["idGroomingType"].ToString()),
+                        result.Rows[i]["GroomingTypeName"].ToString(),
+                        int.Parse(result.Rows[i]["Duration"].ToString()),
+                        result.Rows[i]["Location"].ToString(),
+                        result.Rows[i]["Comments"].ToString()
                         ));
                 }
                 return allAppointment;
@@ -220,18 +220,18 @@ namespace DogGrooming_WCF
                 for (int i = 0; i < result.Rows.Count; i++)
                 {
                     allAppointment.Add(new DAppointment(
-                        int.Parse(result.Rows[0]["idGroomer"].ToString()),
-                        result.Rows[0]["GroomerName"].ToString(),
-                        int.Parse(result.Rows[0]["idDog"].ToString()),
-                        result.Rows[0]["DogName"].ToString(),
-                        int.Parse(result.Rows[0]["idClient"].ToString()),
-                        result.Rows[0]["ClientName"].ToString(),
-                        result.Rows[0]["StartTime"].ToString(),
-                        int.Parse(result.Rows[0]["idGroomingType"].ToString()),
-                        result.Rows[0]["GroomingTypeName"].ToString(),
-                        int.Parse(result.Rows[0]["Duration"].ToString()),
-                        result.Rows[0]["Location"].ToString(),
-                        result.Rows[0]["Comments"].ToString()
+                        int.Parse(result.Rows[i]["idGroomer"].ToString()),
+                        result.Rows[i]["GroomerName"].ToString(),
+                        int.Parse(result.Rows[i]["idDog"].ToString()),
+                        result.Rows[i]["DogName"].ToString(),
+                        int.Parse(result.Rows[i]["idClient"].ToString()),
+                        result.Rows[i]["ClientName"].ToString(),
+                        result.Rows[i]["StartTime"].ToString(),
+                        int.Parse(result.Rows[i]["idGroomingType"].ToString()),
+                        result.Rows[i]["GroomingTypeName"].ToString(),
+                        int.Parse(result.Rows[i]["Duration"].ToString()),
+                        result.Rows[i]["Location"].ToString(),
+                        result.Rows[i]["Comments"].ToString()
                         ));
                 }
                 return allAppointment;

@@ -197,7 +197,7 @@ namespace DogGrooming_WCF
         
         public DClient(int idClient, string firstname, string surname, string email, string homeAddress, int mobilePh, int workPh, int homePh)
         {
-            IdClient = IdClient;
+            IdClient = idClient;
             FirstName = firstname;
             Surname = surname;
             Email = email;

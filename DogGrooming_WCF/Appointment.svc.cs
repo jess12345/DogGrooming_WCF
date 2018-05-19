@@ -23,6 +23,16 @@ namespace DogGrooming_WCF
                             if (int.TryParse(duration, out int du))
                             {
                                 Create(idG, idD, startT, idGr, du, comments);
+                                try
+                                {
+                                    var confirmation = GetAppointmentConfirmationForClients(idG, idD, startT);
+                                    Email.Send(confirmation.Email, "Dog Gooming Appointment Confirmation", confirmation.Message);
+
+                                }
+                                catch (Exception e)
+                                {
+                                    throw new FaultException<string>(e.Message, e.Message);
+                                }
                                 return new DSuccess(idG);
                             }
                             else { throw new FaultException<string>("Invalid duration", "Invalid duration"); }
@@ -164,6 +174,36 @@ namespace DogGrooming_WCF
             }
             catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
         }
+
+        public static DAppointmentReminder GetAppointmentConfirmationForClients(int idGroomer, int idDog, DateTime startTime)
+        {
+            try
+            {
+                var query = @"SELECT c.Email, CONCAT('Hi ',c.FirstName,',<br><br>This is to confirm that you have a booked ',gt.`Name`,
+						                            ' grooming service with ',g.FirstName,' ',g.Surname,' at ',a.StartTime,
+                                                    ' for ',a.Duration,' minutes. This appointment is for ',d.`Name`,' your ',b.`Name`,
+                                                    '. This service will be provided at ',c.HomeAddress,
+                                                    '. If you have any queries, please contact ',g.FirstName,' ',g.Surname,
+                                                    ' at ',g.Email,'.<br><br>Kind regards,<br>Tom''s Dog Grooming Business') Message
+                            FROM Appointment a 
+                            INNER JOIN Groomer g ON g.idGroomer = a.idGroomer 
+                            INNER JOIN Dog d ON d.idDog = a.idDog 
+                            INNER JOIN GroomingType gt ON gt.idGroomingType = a.idGroomingType 
+                            INNER JOIN Breed b ON b.idBreed = d.idBreed
+                            INNER JOIN `Client` c ON c.idClient = d.idClient
+                            WHERE a.idGroomer = "+idGroomer+" AND a.idDog = "+idDog+" AND a.StartTime = '"+startTime.ToString("yyyy-MM-dd HH:mm:ss")+ "' LIMIT 1";
+
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 2)) throw new FaultException<string>("Cannot find newly created appointment", "Cannot find newly created appointment"); ;
+                
+                return new DAppointmentReminder(
+                        result.Rows[0]["Email"].ToString(),
+                        result.Rows[0]["Message"].ToString()
+                        );
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
+        }
+
 
 
         //====================================================//

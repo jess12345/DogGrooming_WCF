@@ -31,7 +31,7 @@ namespace DogGrooming_WCF
                                 }
                                 catch (Exception e)
                                 {
-                                    throw new FaultException<string>(e.Message, e.Message);
+                                    // Don't throw error
                                 }
                                 return new DSuccess(idG);
                             }

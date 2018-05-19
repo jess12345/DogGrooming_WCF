@@ -105,6 +105,7 @@
     <Compile Include="Dog.svc.cs">
       <DependentUpon>Dog.svc</DependentUpon>
     </Compile>
+    <Compile Include="Email.cs" />
     <Compile Include="Groomer.svc.cs">
       <DependentUpon>Groomer.svc</DependentUpon>
     </Compile>

@@ -48,5 +48,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DogGrooming_WCF\DogGrooming_WCF.csproj">
+      <Project>{b3720d77-06ca-40f0-8499-de869546e37c}</Project>
+      <Name>DogGrooming_WCF</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

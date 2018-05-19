@@ -63,6 +63,11 @@ namespace DogGrooming_WCF
         [OperationContract]
         [WebGet(UriTemplate = "Delete/{idGroomer}/{idDog}/{startTime}", ResponseFormat = WebMessageFormat.Json)]
         DSuccess DeleteAppointment(string idGroomer, string idDog, string startTime);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "SendReminderForTomorrow", ResponseFormat = WebMessageFormat.Json)]
+        DSuccess SendReminderForTomorrow();
+
     }
 
 
@@ -367,6 +372,22 @@ namespace DogGrooming_WCF
             Duration = duration;
             Location = location;
             Comments = comments;
+        }
+    }
+
+    [DataContract]
+    public class DAppointmentReminder
+    {
+        [DataMember]
+        public string Email { get; set; }
+
+        [DataMember]
+        public string Message { get; set; }
+
+        public DAppointmentReminder(string email, string message)
+        {
+            Email = email;
+            Message = message;
         }
     }
 

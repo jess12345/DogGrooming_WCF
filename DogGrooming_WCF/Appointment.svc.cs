@@ -25,7 +25,7 @@ namespace DogGrooming_WCF
                                 Create(idG, idD, startT, idGr, du, comments);
                                 return new DSuccess(idG);
                             }
-                            else { throw new FaultException<string>("Invalid duration","Invalid duration"); }
+                            else { throw new FaultException<string>("Invalid duration", "Invalid duration"); }
                         }
                         else { throw new FaultException<string>("Invalid idGroomingType", "Invalid idGroomingType"); }
                     }
@@ -68,11 +68,11 @@ namespace DogGrooming_WCF
                     }
                     else { throw new FaultException<string>("Cannot find appointment", "Cannot find appointment"); }
                 }
-                else { throw new FaultException<string>("Invalid idDog","Invalid idDog"); }
+                else { throw new FaultException<string>("Invalid idDog", "Invalid idDog"); }
             }
             else { throw new FaultException<string>("Invalid idGroomer", "Invalid idGroomer"); }
         }
-        
+
         public List<DAppointment> GetAppointmentsByClient(string idClient)
         {
             if (int.TryParse(idClient, out int idC))
@@ -86,16 +86,84 @@ namespace DogGrooming_WCF
         {
             if (int.TryParse(idGroomer, out int idG))
             {
-                return GetAllForGroomer(idG); 
+                return GetAllForGroomer(idG);
             }
             else { throw new FaultException<string>("Invalid idGroomer", "Invalid idGroomer"); }
         }
-        
+
         public List<DAppointment> GetAppointmentList()
         {
             return GetAll();
         }
 
+        public DSuccess SendReminderForTomorrow()
+        {
+            int NumEmailsToSend;
+            int NumPassed = 0;
+            string failedEmails = "";
+            string errorMessage = "";
+
+            var reminders = GetAppointmentReminderForClients(DateTime.Today.AddDays(1));
+            NumEmailsToSend = reminders.Count();
+            foreach (var r in reminders)
+            {
+                try
+                {
+                    Email.Send(r.Email, "Dog Gooming Appointment Reminder", r.Message);
+                    NumPassed++;
+                }
+                catch (Exception e)
+                {
+                    failedEmails = string.Concat(failedEmails, " ", r.Email, ",");
+                    errorMessage = string.Concat(errorMessage, " <<|>> " + e.Message);
+                }
+            }
+
+            if (failedEmails == "")
+                return new DSuccess(1);
+            else
+                throw new FaultException<string>("Cannot send to: " + failedEmails, "Cannot send to: " + failedEmails + " | Because: "+errorMessage);
+            
+        }
+
+
+        //====================================================//
+        //================== Reminder System =================//
+        //====================================================//
+
+
+        public static List<DAppointmentReminder> GetAppointmentReminderForClients(DateTime dateTime)
+        {
+            try
+            {
+                var query = @"SELECT c.Email, CONCAT('Hi ',c.FirstName,',<br><br>This is a reminder that you have a ',gt.`Name`,
+						                            ' grooming service with ',g.FirstName,' ',g.Surname,' at ',a.StartTime,
+                                                    ' for ',a.Duration,' minutes. This appointment is for ',d.`Name`,' your ',b.`Name`,
+                                                    '. This service will be provided at ',c.HomeAddress,
+                                                    '. If you have any queries, please contact ',g.FirstName,' ',g.Surname,
+                                                    ' at ',g.Email,'.<br><br>We look forward to seeing you.<br><br>Kind regards,<br>Tom''s Dog Grooming Business') Message
+                            FROM Appointment a 
+                            INNER JOIN Groomer g ON g.idGroomer = a.idGroomer 
+                            INNER JOIN Dog d ON d.idDog = a.idDog 
+                            INNER JOIN GroomingType gt ON gt.idGroomingType = a.idGroomingType 
+                            INNER JOIN Breed b ON b.idBreed = d.idBreed
+                            INNER JOIN `Client` c ON c.idClient = d.idClient
+                            WHERE DATE(a.StartTime)='" + dateTime.ToString("yyyy-MM-dd") + "';";
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 2)) throw new FaultException<string>("Cannot get appointments", "Cannot get appointments"); ;
+
+                var allReminders = new List<DAppointmentReminder>();
+                for (int i = 0; i < result.Rows.Count; i++)
+                {
+                    allReminders.Add(new DAppointmentReminder(
+                        result.Rows[i]["Email"].ToString(),
+                        result.Rows[i]["Message"].ToString()
+                        ));
+                }
+                return allReminders;
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
+        }
 
 
         //====================================================//
@@ -157,7 +225,7 @@ namespace DogGrooming_WCF
                 var query = string.Concat("SELECT a.idGroomer, CONCAT(g.FirstName,' ',g.Surname) GroomerName, a.idDog, d.`Name` DogName, d.idClient, CONCAT(c.FirstName,' ',c.Surname) ClientName, a.StartTime, a.idGroomingType, gt.`Name` GroomingTypeName, a.Duration, c.HomeAddress Location, IFNULL(a.Comments,'') Comments FROM Appointment a INNER JOIN Groomer g ON g.idGroomer = a.idGroomer INNER JOIN Dog d ON d.idDog = a.idDog INNER JOIN GroomingType gt ON gt.idGroomingType = a.idGroomingType INNER JOIN `Client` c ON c.idClient = d.idClient WHERE a.idGroomer = ", idGroomer, " AND a.idDog = ", idDog, " AND a.StartTime = '", startTime.ToString("yyyy-MM-dd HH:mm:ss"), "'");
                 var result = MySqlDatabase.RunQuery(query);
                 if ((result.Rows.Count < 1) & (result.Columns.Count != 12)) throw new FaultException<string>("Cannot get appointments", "Cannot get appointments"); ;
-                
+
                 return new DAppointment(
                     int.Parse(result.Rows[0]["idGroomer"].ToString()),
                     result.Rows[0]["GroomerName"].ToString(),

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DogGrooming_WCF;
 
 namespace ReminderSystem
 {
@@ -10,6 +7,12 @@ namespace ReminderSystem
     {
         static void Main(string[] args)
         {
+            try
+            {
+                var appt = new Appointment();
+                Console.WriteLine("Sent " + appt.SendReminderForTomorrow() + " emails");
+            }
+            catch (Exception e) { Console.WriteLine(e.Message); }
         }
     }
 }

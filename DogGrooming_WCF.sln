@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogGrooming_WCF", "DogGrooming_WCF\DogGrooming_WCF.csproj", "{B3720D77-06CA-40F0-8499-DE869546E37C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReminderSystem", "ReminderSystem\ReminderSystem.csproj", "{2E7A6DA4-3D7E-4641-908D-A45639D877AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B3720D77-06CA-40F0-8499-DE869546E37C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3720D77-06CA-40F0-8499-DE869546E37C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3720D77-06CA-40F0-8499-DE869546E37C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E7A6DA4-3D7E-4641-908D-A45639D877AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E7A6DA4-3D7E-4641-908D-A45639D877AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E7A6DA4-3D7E-4641-908D-A45639D877AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E7A6DA4-3D7E-4641-908D-A45639D877AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

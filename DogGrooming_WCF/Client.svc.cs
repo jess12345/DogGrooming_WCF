@@ -24,7 +24,21 @@ namespace DogGrooming_WCF
                     if (int.TryParse(homePhone, out int hPh))
                     {
                         int idClient = Create(firstname, surname, email, password, homeAddress, mPh, wPh, hPh);
-                        if (idClient > 0) return new DSuccess(idClient);
+                        if (idClient > 0)
+                        {
+                            try
+                            {
+                                var confirmation = GetClientConfirmation(idClient);
+                                Email.Send(confirmation.Email, "Dog Gooming Client Registration Confirmation", confirmation.Message);
+
+                            }
+                            catch (Exception e)
+                            {
+                                //throw new FaultException<string>(e.Message, e.Message);
+                                // Don't throw error
+                            }
+                            return new DSuccess(idClient);
+                        }
                         else throw new FaultException<string>("User already exist", "User already exist");
                     }
                     else { throw new FaultException<string>("Invalid homePhone", "Invalid homePhone"); }
@@ -81,7 +95,32 @@ namespace DogGrooming_WCF
         }
 
 
+        //====================================================//
+        //================== Reminder System =================//
+        //====================================================//
 
+        public static DAppointmentReminder GetClientConfirmation(int idClient)
+        {
+            try
+            {
+                var query = @"SELECT c.Email, CONCAT('Hi ',c.FirstName,
+				                            ',<br><br> Thank you registering an account with Tom''s Dog Grooming. <br><br> Your login details are:<br>Username: ',
+				                            c.Email,'<br>Password: ',c.`Password`,
+                                            '<br><br>Click <a href=''http://localhost:8080/login''>here</a> to log in.<br><br>We hope you''ll enjoy our service.<br><br>Kind regards,<br>Tom''s Dog Grooming Business') Message
+                            FROM `Client` c
+                            WHERE idClient = " + idClient;
+
+                var result = MySqlDatabase.RunQuery(query);
+                if ((result.Rows.Count < 1) & (result.Columns.Count != 2)) throw new FaultException<string>("Cannot find newly created appointment", "Cannot find newly created appointment"); ;
+
+                return new DAppointmentReminder(
+                        result.Rows[0]["Email"].ToString(),
+                        result.Rows[0]["Message"].ToString()
+                        );
+            }
+            catch (Exception e) { throw new FaultException<string>(e.Message, e.Message); }
+        }
+        
 
         //====================================================//
         //======================= LOGIC ======================//
@@ -131,7 +170,8 @@ namespace DogGrooming_WCF
 
         private bool Delete(int idClient)
         {
-            // Delete client and appointments from the database
+            var query = string.Concat("DELETE FROM Client WHERE idClient = ", idClient);
+            MySqlDatabase.RunQuery(query);
             return true;
         }
 

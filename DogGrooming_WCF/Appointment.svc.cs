@@ -254,8 +254,15 @@ namespace DogGrooming_WCF
         private void Delete(int idGroomer, int idDog, DateTime startTime)
         {
             // Delete appointment from the database
-            var query = string.Concat("DELETE FROM Appointment WHERE idGroomer = ", idGroomer, " AND idDog = ", idDog, " AND StartTime = '", startTime.ToString("yyyy-MM-dd HH:mm:ss"), "'");
-            MySqlDatabase.RunQuery(query);
+            try
+            {
+                var query = string.Concat("DELETE FROM Appointment WHERE idGroomer = ", idGroomer, " AND idDog = ", idDog, " AND StartTime = '", startTime.ToString("yyyy-MM-dd HH:mm:ss"), "'");
+                MySqlDatabase.RunQuery(query);
+            }
+            catch (Exception e)
+            {
+            }
+            
         }
 
         private DAppointment GetById(int idGroomer, int idDog, DateTime startTime)
